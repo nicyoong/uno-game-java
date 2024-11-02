@@ -38,7 +38,9 @@ To run this project, you will need:
 
 1. **Clone the repository**:
 
-git clone <repository-url> cd <repository-directory>
+Git clone the repository's URL
+
+Then cd into the directory
 
 2. **Navigate to the project directory**:
 Ensure you are in the directory containing the `Makefile`.
