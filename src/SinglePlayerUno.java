@@ -283,21 +283,7 @@ public class SinglePlayerUno {
         if (finishingOrder.contains(player)) {
             return; // Skip the turn if player has already finished
         }
-    
-        // Debugging Information
-        System.out.println("Debugging Info:");
-        System.out.println("Cards in deck: " + deck.getNumCards());
-        System.out.println("Cards in discard pile: " + discardPile.getNumCards());
-    
-        int totalCardsInHands = 0;
-        for (CollectionOfUnoCards hand : hands) {
-            totalCardsInHands += hand.getNumCards();
-        }
-        System.out.println("Total cards in hands: " + totalCardsInHands);
-    
-        System.out.println("Turn number: " + turnNumber);
-        System.out.println("Remaining players: " + (numPlayers - finishingOrder.size()));
-    
+      
         CollectionOfUnoCards playerHand = hands.get(player);
         UnoCard topCard = discardPile.getTopCard();
         

@@ -1,51 +1,52 @@
-# Makefile for building Java project
-
-# Compiler
-JAVAC = javac
-
 # Source and binary directories
 SRC_DIR = src
 BIN_DIR = bin
 
-# List of Java source files
-SOURCES = $(SRC_DIR)/CollectionOfUnoCards.java \
-          $(SRC_DIR)/ExtremeUno.java \
-          $(SRC_DIR)/ExtremeUnoCollection.java \
-          $(SRC_DIR)/ExtremeUnoLauncher.java \
-          $(SRC_DIR)/SinglePlayerUno.java \
-          $(SRC_DIR)/Uno.java \
-          $(SRC_DIR)/UnoCard.java \
-          $(SRC_DIR)/UnoGameLauncher.java
+# Expand the SOURCES variable
+SOURCES := $(SRC_DIR)/CollectionOfUnoCards.java \
+           $(SRC_DIR)/ExtremeUno.java \
+           $(SRC_DIR)/ExtremeUnoCollection.java \
+           $(SRC_DIR)/ExtremeUnoLauncher.java \
+           $(SRC_DIR)/SinglePlayerUno.java \
+           $(SRC_DIR)/Uno.java \
+           $(SRC_DIR)/UnoCard.java \
+           $(SRC_DIR)/UnoGameLauncher.java
 
 # Compile all .java files to .class files in the bin directory
-CLASSES = $(SOURCES:$(SRC_DIR)/%.java=$(BIN_DIR)/%.class)
+CLASSES := $(SOURCES:$(SRC_DIR)/%.java=$(BIN_DIR)/%.class)
 
-# Default target to build all .class files
-all: $(CLASSES)
+# Main target
+all: $(BIN_DIR) $(CLASSES)
 
-# Pattern rule to compile .java files to .class files in the bin directory
-$(BIN_DIR)/%.class: $(SRC_DIR)/%.java | $(BIN_DIR)
-	$(JAVAC) -d $(BIN_DIR) $<
-
-# Ensure bin directory exists
+# Create the binary directory
 $(BIN_DIR):
-	mkdir -p $(BIN_DIR)
+	@mkdir -p $(BIN_DIR)
 
-# Run the UnoGameLauncher class
-run: all
-	java -cp $(BIN_DIR) UnoGameLauncher
+# Rule to compile all Java files at once
+$(BIN_DIR)/%.class: $(SRC_DIR)/%.java
+	@echo "Compiling all Java files to class files..."
+	@echo "Running command: javac -d $(BIN_DIR) $(SOURCES)"
+	@javac -d $(BIN_DIR) $(SOURCES)
 
-# Run the ExtremeUnoLauncher class
-run_extreme: all
-	java -cp $(BIN_DIR) ExtremeUnoLauncher
+# Run the Uno game
+run: $(CLASSES)
+	@echo "Running the Uno game..."
+	@java -cp $(BIN_DIR) UnoGameLauncher
 
-# Clean up all .class files in the bin directory
+# Run the Extreme Uno game
+run_extreme: $(CLASSES)
+	@echo "Running the Extreme Uno game..."
+	@java -cp $(BIN_DIR) ExtremeUnoLauncher
+
+# Clean target
 clean:
-	rm -rf $(BIN_DIR)/*.class
+	@echo "Cleaning up compiled classes..."
+	@rm -rf $(BIN_DIR)/*.class
 
-# Full clean - removes bin directory completely
+# Full clean target
 fclean: clean
-	rm -rf $(BIN_DIR)
+	@echo "Removing binary directory..."
+	@rm -rf $(BIN_DIR)
 
 # Phony targets
 .PHONY: all clean fclean run run_extreme
