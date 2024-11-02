@@ -7,7 +7,7 @@ public class SinglePlayerUno {
 
     final private static int NUMCARDSHAND = 7;
     final private static int MIN_PLAYERS = 2;
-    final private static int MAX_PLAYERS = 8;
+    final private static int MAX_PLAYERS = 10;
 
     private CollectionOfUnoCards deck;
     private CollectionOfUnoCards discardPile;

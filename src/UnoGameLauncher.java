@@ -5,12 +5,12 @@ public class UnoGameLauncher {
         Scanner scanner = new Scanner(System.in);
 
         // Get the number of players for both game modes
-        System.out.print("Enter the number of players between 2 and 8: ");
+        System.out.print("Enter the number of players between 2 and 10: ");
         int numPlayers = scanner.nextInt();
 
         // Validate the input for multiplayer game mode
-        while (numPlayers < 2 || numPlayers > 8) {
-            System.out.print("Invalid number of players. Please enter a number between 2 and 8: ");
+        while (numPlayers < 2 || numPlayers > 10) {
+            System.out.print("Invalid number of players. Please enter a number between 2 and 10: ");
             numPlayers = scanner.nextInt();
         }
 
