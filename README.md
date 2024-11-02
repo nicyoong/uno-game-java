@@ -60,6 +60,8 @@ make run
 
 make run_extreme
 
+Note: extreme version is single player only
+
 ### Cleaning Up
 
 - **To clean up compiled class files**:
