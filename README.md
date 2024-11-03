@@ -7,6 +7,7 @@ This UNO project is a Java implementation of the classic card game that includes
 - **Single Player Mode**: Play against computer opponents, with the ability to configure up to 10 opponents.
 - **Extreme Mode**: A variant of UNO that allows for a larger player base, accommodating up to 60 players.
 - **Multiplayer Mode**: Engage in a classic UNO experience with up to 10 human players.
+- **42 Mode**: A unique variant of UNO that introduces the SegFault card, adding new strategic elements to the game.
 
 ## Features
 
@@ -24,6 +25,12 @@ This UNO project is a Java implementation of the classic card game that includes
   - Compete with friends and family.
   - Up to 10 players can join in local multiplayer.
   - Supports standard UNO rules and features.
+  
+- **42 Mode**:
+  - A special variant of UNO featuring the SegFault card.
+  - The SegFault card introduces unique gameplay mechanics, such as forcing players to draw cards or skip turns.
+  - Adds an extra layer of strategy and unpredictability to the game.
+  - Available in both single player and multiplayer formats.
 
 ## Getting Started
 
