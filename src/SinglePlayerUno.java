@@ -19,7 +19,7 @@ public class SinglePlayerUno {
     public int humanPlayerIndex;
     private SingleCardEffectHandler singleCardEffectHandler;
 
-    public SinglePlayerUno(int numPlayers) {
+    public SinglePlayerUno(int numPlayers, String gameMode) {
         if (numPlayers < MIN_PLAYERS || numPlayers > MAX_PLAYERS) {
             throw new IllegalArgumentException("Number of players must be between " + MIN_PLAYERS + " and " + MAX_PLAYERS);
         }
@@ -32,7 +32,7 @@ public class SinglePlayerUno {
 
         // Initialize the deck and shuffle it.
         deck = new CollectionOfUnoCards();
-        deck.makeDeck();
+        deck.makeDeck(gameMode);
         deck.shuffle();
 
         // Discard Pile
@@ -61,7 +61,7 @@ public class SinglePlayerUno {
         singleCardEffectHandler = new SingleCardEffectHandler();
 
         // Handle the starting card effects
-        singleCardEffectHandler.handleStartingCardEffect(startingCard, this);
+        singleCardEffectHandler.handleStartingCardEffect(startingCard, gameMode, this);
     }
 
     public int getCurrentPlayerIndex() {
@@ -95,7 +95,7 @@ public class SinglePlayerUno {
         }
     }
 
-    public void playGame() {
+    public void playGame(String gameMode) {
         Scanner stdin = new Scanner(System.in);
         System.out.println("Starting the game with " + numPlayers + " players!");
 
@@ -108,7 +108,7 @@ public class SinglePlayerUno {
         while (finishingOrder.size() < numPlayers - 1) {
             // Only play the turn if the current player has not finished
             if (!finishingOrder.contains(currentPlayerIndex)) {
-                playTurn(currentPlayerIndex);
+                playTurn(currentPlayerIndex, gameMode);
                 checkForWinner(currentPlayerIndex);
             }
 
@@ -166,29 +166,30 @@ public class SinglePlayerUno {
     public int promptColorSelection(int player) {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Player " + (player + 1) + ", choose a color:");
-        System.out.println("0: Yellow, 1: Red, 2: Green, 3: Blue");
+        System.out.println("1: Yellow, 2: Red, 3: Green, 4: Blue");
         
         int colorChoice = -1;
-        while (colorChoice < 0 || colorChoice > 3) {
+        while (colorChoice < 1 || colorChoice > 4) {
             System.out.print("Enter the color number: ");
             colorChoice = scanner.nextInt();
-            if (colorChoice < 0 || colorChoice > 3) {
-                System.out.println("Invalid choice. Please choose between 0 and 3.");
+            if (colorChoice < 1 || colorChoice > 4) {
+                System.out.println("Invalid choice. Please choose between 1 and 4.");
             }
         }
         
         // Print the chosen color name for better clarity
         String colorName = "";
         switch (colorChoice) {
-            case 0: colorName = "Yellow"; break;
-            case 1: colorName = "Red"; break;
-            case 2: colorName = "Green"; break;
-            case 3: colorName = "Blue"; break;
+            case 1: colorName = "Yellow"; break;
+            case 2: colorName = "Red"; break;
+            case 3: colorName = "Green"; break;
+            case 4: colorName = "Blue"; break;
         }
         System.out.println("You have chosen " + colorName + " for the Wild card.");
         
-        return colorChoice;
+        return colorChoice - 1;
     }
+    
 
     public int getNextPlayer(int currentPlayer) {
         if (isClockwise) {
@@ -263,7 +264,7 @@ public class SinglePlayerUno {
         }
     }
 
-    public void playTurn(int player) {
+    public void playTurn(int player, String gameMode) {
         if (finishingOrder.contains(player)) {
             return; // Skip the turn if player has already finished
         }
@@ -299,7 +300,7 @@ public class SinglePlayerUno {
             playerHand.remove(cardIndex); // Remove the played card from the hand
             discardPile.addCard(playedCard);
             System.out.println("You played: " + playedCard);
-            singleCardEffectHandler.handleCardEffect(playedCard, player, this);
+            singleCardEffectHandler.handleCardEffect(playedCard, player, gameMode, this);
         } else { // AI player
             // Attempt to play a card first
             boolean played = false;
@@ -322,7 +323,7 @@ public class SinglePlayerUno {
                 playerHand.remove(randomIndex);
                 discardPile.addCard(aiPlayedCard);
                 System.out.println("AI Player " + (player + 1) + " played: " + aiPlayedCard);
-                singleCardEffectHandler.handleCardEffect(aiPlayedCard, player, this);
+                singleCardEffectHandler.handleCardEffect(aiPlayedCard, player, gameMode, this);
                 played = true;
             } else {
                 System.out.println("AI Player " + (player + 1) + " cannot play any card. Drawing a card...");
@@ -336,7 +337,7 @@ public class SinglePlayerUno {
                             playerHand.remove(i);
                             discardPile.addCard(aiPlayedCard);
                             System.out.println("AI Player " + (player + 1) + " played: " + aiPlayedCard);
-                            singleCardEffectHandler.handleCardEffect(aiPlayedCard, player, this);
+                            singleCardEffectHandler.handleCardEffect(aiPlayedCard, player, gameMode, this);
                             break;
                         }
                     }
@@ -349,8 +350,21 @@ public class SinglePlayerUno {
     
 
     private boolean canPlay(UnoCard cardToPlay, UnoCard topCard) {
-        // Example logic for determining if a card can be played on top of another card
-        return cardToPlay.getColor() == topCard.getColor() || cardToPlay.getNumber() == topCard.getNumber() || cardToPlay.getNumber() == 13 || cardToPlay.getNumber() == 14;
+        boolean[] conditions = new boolean[]{
+            cardToPlay.getColor() == topCard.getColor(),
+            cardToPlay.getNumber() == topCard.getNumber(),
+            cardToPlay.getNumber() == 13,
+            cardToPlay.getNumber() == 14,
+            cardToPlay.getNumber() == 15
+        };
+    
+        for (boolean condition : conditions) {
+            if (condition) {
+                return true;
+            }
+        }
+    
+        return false;
     }
 
     private boolean canPlayAnyCard(CollectionOfUnoCards playerHand, UnoCard topCard) {

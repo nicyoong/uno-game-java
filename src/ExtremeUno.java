@@ -20,7 +20,7 @@ public class ExtremeUno {
 
     private int turnNumber;
 
-    public ExtremeUno(int numPlayers) {
+    public ExtremeUno(int numPlayers, String gameMode) {
         if (numPlayers < MIN_PLAYERS || numPlayers > MAX_PLAYERS) {
             throw new IllegalArgumentException("Number of players must be between " + MIN_PLAYERS + " and " + MAX_PLAYERS);
         }
@@ -33,7 +33,7 @@ public class ExtremeUno {
 
         // Initialize the deck and shuffle it.
         deck = new ExtremeUnoCollection();
-        deck.makeExtremeDeck(numPlayers);
+        deck.makeExtremeDeck(numPlayers, gameMode);
         deck.shuffle();
 
         // Discard Pile

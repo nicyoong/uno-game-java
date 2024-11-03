@@ -2,7 +2,7 @@ import java.util.Random;
 
 public class CollectionOfUnoCards {
 	
-	final private static int MAXCARDS  = 108;
+	final private static int MAXCARDS  = 112;
 	 
 	private UnoCard[] cards;
 	private int numCards;
@@ -53,7 +53,7 @@ public class CollectionOfUnoCards {
 		return retval;
 	}
 	
-	public void makeDeck() {
+	public void makeDeck(String gameMode) {
         // This clears our deck!
         numCards = 0;
     
@@ -61,7 +61,7 @@ public class CollectionOfUnoCards {
         for (int i = 0; i < 2; i++) { // Loop for number cards 1-9
             for (int j = 0; j < 4; j++) { // Loop for each color
                 for (int k = 1; k <= 9; k++) {
-                    cards[numCards] = new UnoCard(j, k);
+                    cards[numCards] = new UnoCard(j, k, gameMode);
                     numCards++;
                 }
             }
@@ -69,29 +69,36 @@ public class CollectionOfUnoCards {
 
         // Add one 0 card for each color
         for (int j = 0; j < 4; j++) { // Loop for each color
-            cards[numCards] = new UnoCard(j, 0); // 0 card
+            cards[numCards] = new UnoCard(j, 0, gameMode); // 0 card
             numCards++;
         }
     
         // Add 2 copies of action cards for each color
         for (int i = 0; i < 2; i++) { // Loop for each action
             for (int j = 0; j < 4; j++) { // Loop for each color
-                cards[numCards] = new UnoCard(j, 10); // Skip
+                cards[numCards] = new UnoCard(j, 10, gameMode); // Skip
                 numCards++;
-                cards[numCards] = new UnoCard(j, 11); // Reverse
+                cards[numCards] = new UnoCard(j, 11, gameMode); // Reverse
                 numCards++;
-                cards[numCards] = new UnoCard(j, 12); // Draw Two
+                cards[numCards] = new UnoCard(j, 12, gameMode); // Draw Two
                 numCards++;
             }
         }
     
         // Add 4 Wild and 4 Wild Draw Four cards
         for (int i = 0; i < 4; i++) { // Loop for Wilds
-            cards[numCards] = new UnoCard(-1, 13); // Wild
+            cards[numCards] = new UnoCard(-1, 13, gameMode); // Wild
             numCards++;
-            cards[numCards] = new UnoCard(-2, 14); // Wild Draw Four
+            cards[numCards] = new UnoCard(-2, 14, gameMode); // Wild Draw Four
             numCards++;
         }
+
+        if (gameMode.equals("42")) {
+            for (int i = 0; i < 4; i++) { // Add 4 SegFault cards
+                cards[numCards] = new UnoCard(-1, 15, gameMode); // SegFault card
+                numCards++;
+            }
+        }   
     
         // The deck is complete.
     }
@@ -133,7 +140,7 @@ public class CollectionOfUnoCards {
 		return cards[numCards-1];
 	}
 	
-	// Returns true iff there's any card in this collection that can be played
+	// Returns true if there's any card in this collection that can be played
 	// on top of c.
 	public boolean canPlay(UnoCard c) {
         boolean hasPlayableCard = false; // To track if there are any playable cards

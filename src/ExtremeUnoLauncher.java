@@ -23,8 +23,9 @@ public class ExtremeUnoLauncher {
          if (scanner.hasNextInt()) {
             int gameMode = scanner.nextInt();
             if (gameMode == 1) {
+               String gameMode2 = "Normal";
                System.out.println("Starting Extreme Single Player Uno with " + numberOfPlayers + " players...");
-               ExtremeUno singlePlayerGame = new ExtremeUno(numberOfPlayers);
+               ExtremeUno singlePlayerGame = new ExtremeUno(numberOfPlayers, gameMode2);
                singlePlayerGame.playGame();
                break; // Exit after starting the game
             } else if (gameMode == 2) {

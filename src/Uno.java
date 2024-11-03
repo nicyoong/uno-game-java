@@ -17,7 +17,7 @@ public class Uno {
     private boolean isClockwise = true;
     private CardEffectHandler cardEffectHandler;
 
-    public Uno(int numPlayers) {
+    public Uno(int numPlayers, String gameMode) {
         if (numPlayers < MIN_PLAYERS || numPlayers > MAX_PLAYERS) {
             throw new IllegalArgumentException("Number of players must be between " + MIN_PLAYERS + " and " + MAX_PLAYERS);
         }
@@ -27,7 +27,7 @@ public class Uno {
 
         // Initialize the deck and shuffle it.
         deck = new CollectionOfUnoCards();
-        deck.makeDeck();
+        deck.makeDeck(gameMode);
         deck.shuffle();
 
         // Discard Pile
@@ -56,7 +56,8 @@ public class Uno {
         // Initialize the CardEffectHandler
         cardEffectHandler = new CardEffectHandler();
 
-        cardEffectHandler.handleStartingCardEffect(startingCard, 0, this);
+        // 42 gamemode affects this
+        cardEffectHandler.handleStartingCardEffect(startingCard, 0, gameMode, this);
     }
 
     public int getCurrentPlayerIndex() {
@@ -89,7 +90,7 @@ public class Uno {
         }
     }
 
-    public void playGame() {
+    public void playGame(String gameMode) {
         Scanner stdin = new Scanner(System.in);
         System.out.println("Starting the game with " + numPlayers + " players!");
 
@@ -103,7 +104,7 @@ public class Uno {
         while (finishingOrder.size() < numPlayers - 1) {
             // Only play the turn if the current player has not finished
             if (!finishingOrder.contains(currentPlayerIndex)) {
-                playTurn(currentPlayerIndex);
+                playTurn(currentPlayerIndex, gameMode);
                 checkForWinner(currentPlayerIndex);
             }
             
@@ -159,18 +160,19 @@ public class Uno {
     public int promptColorSelection(int player) {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Player " + (player + 1) + ", choose a color:");
-        System.out.println("0: Yellow, 1: Red, 2: Green, 3: Blue");
+        System.out.println("1: Yellow, 2: Red, 3: Green, 4: Blue");
         
-        int colorChoice = -1;
-        while (colorChoice < 0 || colorChoice > 3) {
+        int colorChoice = 0; // Initialize to 0 (invalid)
+        while (colorChoice < 1 || colorChoice > 4) {
             System.out.print("Enter the color number: ");
             colorChoice = scanner.nextInt();
-            if (colorChoice < 0 || colorChoice > 3) {
-                System.out.println("Invalid choice. Please choose between 0 and 3.");
+            if (colorChoice < 1 || colorChoice > 4) {
+                System.out.println("Invalid choice. Please choose between 1 and 4.");
             }
         }
-        return colorChoice;
+        return colorChoice - 1;
     }
+    
 
     public int getNextPlayer(int currentPlayer) {
         if (isClockwise) {
@@ -253,7 +255,7 @@ public class Uno {
     }
     
 
-    public void playTurn(int player) {
+    public void playTurn(int player, String gameMode) {
         if (finishingOrder.contains(player)) {
             return; // Skip the turn if player has already finished
         }
@@ -295,7 +297,8 @@ public class Uno {
         }
         
         // Check for action cards and execute their effects
-        cardEffectHandler.handleCardEffect(chosenCard, player, this);
+        // 42 Gamemode affects this
+        cardEffectHandler.handleCardEffect(chosenCard, player, gameMode, this);
     }
      
     private void shuffleDiscardPileIntoDeck() {
