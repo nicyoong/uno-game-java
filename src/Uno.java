@@ -8,14 +8,14 @@ public class Uno {
     final private static int MIN_PLAYERS = 2;
     final private static int MAX_PLAYERS = 10;
 
-    private CollectionOfUnoCards deck;
+    public CollectionOfUnoCards deck;
     private CollectionOfUnoCards discardPile;
     private List<CollectionOfUnoCards> hands;
-    private int currentPlayerIndex;
+    public int currentPlayerIndex;
     private int numPlayers;
     private List<Integer> finishingOrder;
-
     private boolean isClockwise = true;
+    private CardEffectHandler cardEffectHandler;
 
     public Uno(int numPlayers) {
         if (numPlayers < MIN_PLAYERS || numPlayers > MAX_PLAYERS) {
@@ -53,41 +53,29 @@ public class Uno {
 
         currentPlayerIndex = 0; // Start with the first player
 
-        // Check if the starting card is a Wild or Wild Draw Four
-        if (startingCard.getNumber() == 13) { // Wild
-            System.out.println("Starting card is a Wild. Player 1 can choose the starting color.");
-            int chosenColor = promptColorSelection(0); // Prompt player 1 for a color
-            startingCard.setColor(chosenColor); // Set chosen color
-        } else if (startingCard.getNumber() == 14) { // Wild Draw Four
-            System.out.println("Starting card is a Wild Draw Four. Returning it to the deck and drawing a new starting card.");
-            deck.addCard(startingCard); // Return Wild Draw Four to the deck
-            deck.shuffle(); // Reshuffle the deck
-            startingCard = deck.removeFromTop(); // Draw a new starting card
-        }
+        // Initialize the CardEffectHandler
+        cardEffectHandler = new CardEffectHandler();
 
-        switch (startingCard.getNumber()) {
-            case 10: // Skip
-                System.out.println("Starting card is a Skip. Player 1's turn is skipped.");
-                currentPlayerIndex = getNextPlayer(currentPlayerIndex); // Skip Player 1
-                break;
-    
-            case 11: // Reverse
-                System.out.println("Starting card is a Reverse. Turn order is reversed.");
-                isClockwise = !isClockwise; // Reverse the direction
-                break;
-    
-            case 12: // Draw Two
-                System.out.println("Starting card is a Draw Two. Player 1 must draw two cards.");
-                executeDraw(currentPlayerIndex, 2);
-                currentPlayerIndex = getNextPlayer(currentPlayerIndex); // Move to the next player
-                break;
-    
-            default:
-                break; // No action needed for regular cards
-        }
+        cardEffectHandler.handleStartingCardEffect(startingCard, 0, this);
     }
 
-    private void checkForWinner(int playerIndex) {
+    public int getCurrentPlayerIndex() {
+        return currentPlayerIndex;
+    }
+
+    public void setCurrentPlayerIndex(int index) {
+        currentPlayerIndex = index;
+    }
+
+    public boolean isClockwise() {
+        return isClockwise;
+    }
+
+    public void setClockwise(boolean direction) {
+        isClockwise = direction;
+    }
+
+    public void checkForWinner(int playerIndex) {
         // Check if the current player finished their cards
         if (hands.get(playerIndex).getNumCards() == 0) {
             System.out.println("Player " + (playerIndex + 1) + " has finished!");
@@ -168,7 +156,7 @@ public class Uno {
         }
     }
 
-    private int promptColorSelection(int player) {
+    public int promptColorSelection(int player) {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Player " + (player + 1) + ", choose a color:");
         System.out.println("0: Yellow, 1: Red, 2: Green, 3: Blue");
@@ -184,7 +172,7 @@ public class Uno {
         return colorChoice;
     }
 
-    private int getNextPlayer(int currentPlayer) {
+    public int getNextPlayer(int currentPlayer) {
         if (isClockwise) {
             return (currentPlayer + 1) % numPlayers;
         } else {
@@ -193,7 +181,7 @@ public class Uno {
     }
 
     // Gets the next player who hasn't finished yet
-    private int getNextActivePlayer(int currentPlayerIndex) {
+    public int getNextActivePlayer(int currentPlayerIndex) {
         int nextPlayerIndex = getNextPlayer(currentPlayerIndex);
 
         // Loop to find the next player who is not in finishingOrder
@@ -247,7 +235,7 @@ public class Uno {
         }
     }
 
-    private void executeDraw(int playerIndex, int numCards) {
+    public void executeDraw(int playerIndex, int numCards) {
         // Check if the deck has enough cards
         if (deck.getNumCards() < numCards) {
             System.out.println("Current number of cards in the deck: " + deck.getNumCards());
@@ -307,51 +295,9 @@ public class Uno {
         }
         
         // Check for action cards and execute their effects
-        handleCardEffect(chosenCard, player);
+        cardEffectHandler.handleCardEffect(chosenCard, player, this);
     }
-
-    private void handleCardEffect(UnoCard chosenCard, int playerIndex) {
-        switch (chosenCard.getNumber()) {
-            case 10: // Skip
-                System.out.println("Next player is skipped!");
-                checkForWinner(currentPlayerIndex);
-                currentPlayerIndex = getNextActivePlayer(currentPlayerIndex);
-                break;
-    
-            case 11: // Reverse
-                System.out.println("Turn order reversed!");
-                isClockwise = !isClockwise; // Reverse the direction of play
-                break;
-    
-            case 12: // Draw Two
-                System.out.println("Next player draws two cards!");
-                checkForWinner(currentPlayerIndex);
-                int nextPlayer = getNextActivePlayer(currentPlayerIndex);
-                executeDraw(nextPlayer, 2);
-                currentPlayerIndex = getNextActivePlayer(currentPlayerIndex);
-                break;
-    
-            case 13: // Wild
-                System.out.println("Wild card played! Choosing a new color...");
-                chosenCard.setColor(promptColorSelection(playerIndex));
-                break;
-    
-            case 14: // Wild Draw Four
-                System.out.println("Wild Draw Four card played! Choosing a new color...");
-                chosenCard.setColor(promptColorSelection(playerIndex));
-                System.out.println("Next player draws four cards!");
-                checkForWinner(currentPlayerIndex);
-                nextPlayer = getNextActivePlayer(currentPlayerIndex);
-                executeDraw(nextPlayer, 4);
-                currentPlayerIndex = getNextActivePlayer(currentPlayerIndex);
-                break;
-    
-            default:
-                // No action for regular cards
-                break;
-        }
-    }
-       
+     
     private void shuffleDiscardPileIntoDeck() {
         System.out.println("Shuffling the discard pile back into the deck.");
     

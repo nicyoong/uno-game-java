@@ -9,16 +9,15 @@ public class SinglePlayerUno {
     final private static int MIN_PLAYERS = 2;
     final private static int MAX_PLAYERS = 10;
 
-    private CollectionOfUnoCards deck;
+    public CollectionOfUnoCards deck;
     private CollectionOfUnoCards discardPile;
     private List<CollectionOfUnoCards> hands;
-    private int currentPlayerIndex;
+    public int currentPlayerIndex;
     private int numPlayers;
     private List<Integer> finishingOrder;
-    private boolean isClockwise = true;
-    private int humanPlayerIndex;
-
-    private int turnNumber;
+    public boolean isClockwise = true;
+    public int humanPlayerIndex;
+    private SingleCardEffectHandler singleCardEffectHandler;
 
     public SinglePlayerUno(int numPlayers) {
         if (numPlayers < MIN_PLAYERS || numPlayers > MAX_PLAYERS) {
@@ -59,47 +58,32 @@ public class SinglePlayerUno {
 
         currentPlayerIndex = 0; // Start with the first player
 
-        turnNumber = 1;
+        singleCardEffectHandler = new SingleCardEffectHandler();
 
         // Handle the starting card effects
-        handleStartingCard(startingCard);
+        singleCardEffectHandler.handleStartingCardEffect(startingCard, this);
     }
 
-    private int chooseRandomColor() {
+    public int getCurrentPlayerIndex() {
+        return currentPlayerIndex;
+    }
+
+    public void setCurrentPlayerIndex(int index) {
+        currentPlayerIndex = index;
+    }
+
+    public boolean isClockwise() {
+        return isClockwise;
+    }
+
+    public void setClockwise(boolean direction) {
+        isClockwise = direction;
+    }
+
+    public int chooseRandomColor() {
         Random random = new Random();
         return random.nextInt(4); // Randomly select a color (0-3)
     }    
-
-    private void handleStartingCard(UnoCard startingCard) {
-        if (startingCard.getNumber() == 13) { // Wild
-            System.out.println("Starting card is a Wild. Player 1 can choose the starting color.");
-            int chosenColor = promptColorSelection(0); // Prompt player 1 for a color
-            startingCard.setColor(chosenColor); // Set chosen color
-        } else if (startingCard.getNumber() == 14) { // Wild Draw Four
-            System.out.println("Starting card is a Wild Draw Four. Returning it to the deck and drawing a new starting card.");
-            deck.addCard(startingCard); // Return Wild Draw Four to the deck
-            deck.shuffle(); // Reshuffle the deck
-            startingCard = deck.removeFromTop(); // Draw a new starting card
-        }
-
-        switch (startingCard.getNumber()) {
-            case 10: // Skip
-                System.out.println("Starting card is a Skip. Player 1's turn is skipped.");
-                currentPlayerIndex = getNextPlayer(currentPlayerIndex); // Skip Player 1
-                break;
-            case 11: // Reverse
-                System.out.println("Starting card is a Reverse. Turn order is reversed.");
-                isClockwise = !isClockwise; // Reverse the direction
-                break;
-            case 12: // Draw Two
-                System.out.println("Starting card is a Draw Two. Player 1 must draw two cards.");
-                executeDraw(currentPlayerIndex, 2);
-                currentPlayerIndex = getNextPlayer(currentPlayerIndex); // Move to the next player
-                break;
-            default:
-                break; // No action needed for regular cards
-        }
-    }
 
     private void checkForWinner(int playerIndex) {
         if (hands.get(playerIndex).getNumCards() == 0) {
@@ -179,7 +163,7 @@ public class SinglePlayerUno {
         stdin.close(); // Close Scanner at the end of the game
     }
 
-    private int promptColorSelection(int player) {
+    public int promptColorSelection(int player) {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Player " + (player + 1) + ", choose a color:");
         System.out.println("0: Yellow, 1: Red, 2: Green, 3: Blue");
@@ -206,7 +190,7 @@ public class SinglePlayerUno {
         return colorChoice;
     }
 
-    private int getNextPlayer(int currentPlayer) {
+    public int getNextPlayer(int currentPlayer) {
         if (isClockwise) {
             return (currentPlayer + 1) % numPlayers;
         } else {
@@ -214,7 +198,7 @@ public class SinglePlayerUno {
         }
     }
 
-    private int getNextActivePlayer(int currentPlayerIndex) {
+    public int getNextActivePlayer(int currentPlayerIndex) {
         int nextPlayerIndex = getNextPlayer(currentPlayerIndex);
         while (finishingOrder.contains(nextPlayerIndex)) {
             nextPlayerIndex = getNextPlayer(nextPlayerIndex);
@@ -222,7 +206,7 @@ public class SinglePlayerUno {
         return nextPlayerIndex;
     }
 
-    private void executeDraw(int playerIndex, int numCards) {
+    public void executeDraw(int playerIndex, int numCards) {
         if (deck.getNumCards() < numCards) {
             System.out.println("Not enough cards in the deck, shuffling discard pile into deck.");
             shuffleDiscardPileIntoDeck();
@@ -315,7 +299,7 @@ public class SinglePlayerUno {
             playerHand.remove(cardIndex); // Remove the played card from the hand
             discardPile.addCard(playedCard);
             System.out.println("You played: " + playedCard);
-            handleCardEffect(playedCard, player);
+            singleCardEffectHandler.handleCardEffect(playedCard, player, this);
         } else { // AI player
             // Attempt to play a card first
             boolean played = false;
@@ -338,7 +322,7 @@ public class SinglePlayerUno {
                 playerHand.remove(randomIndex);
                 discardPile.addCard(aiPlayedCard);
                 System.out.println("AI Player " + (player + 1) + " played: " + aiPlayedCard);
-                handleCardEffect(aiPlayedCard, player);
+                singleCardEffectHandler.handleCardEffect(aiPlayedCard, player, this);
                 played = true;
             } else {
                 System.out.println("AI Player " + (player + 1) + " cannot play any card. Drawing a card...");
@@ -352,7 +336,7 @@ public class SinglePlayerUno {
                             playerHand.remove(i);
                             discardPile.addCard(aiPlayedCard);
                             System.out.println("AI Player " + (player + 1) + " played: " + aiPlayedCard);
-                            handleCardEffect(aiPlayedCard, player);
+                            singleCardEffectHandler.handleCardEffect(aiPlayedCard, player, this);
                             break;
                         }
                     }
@@ -361,9 +345,6 @@ public class SinglePlayerUno {
                 }
             }
         }        
-    
-        // Increment the turn number at the end of each player's turn
-        turnNumber++;
     }
     
 
@@ -381,58 +362,13 @@ public class SinglePlayerUno {
         return false;
     }
 
-    private String getColorName(int colorNumber) {
+    public String getColorName(int colorNumber) {
         switch (colorNumber) {
             case 0: return "Yellow";
             case 1: return "Red";
             case 2: return "Green";
             case 3: return "Blue";
             default: return "Unknown";
-        }
-    }
-
-    private void handleCardEffect(UnoCard playedCard, int playerIndex) {
-        switch (playedCard.getNumber()) {
-            case 10: // Skip
-                System.out.println("Player " + (playerIndex + 1) + " played Skip. Next player's turn is skipped.");
-                currentPlayerIndex = getNextActivePlayer(currentPlayerIndex);
-                break;
-            case 11: // Reverse
-                System.out.println("Player " + (playerIndex + 1) + " played Reverse. Turn order is reversed.");
-                isClockwise = !isClockwise;
-                break;
-            case 12: // Draw Two
-                System.out.println("Player " + (playerIndex + 1) + " played Draw Two. Next player must draw 2 cards.");
-                executeDraw(getNextActivePlayer(currentPlayerIndex), 2);
-                currentPlayerIndex = getNextActivePlayer(currentPlayerIndex);
-                break;
-            case 13: // Wild
-                if (playerIndex == humanPlayerIndex) {
-                    // Human player chooses color
-                    int color = promptColorSelection(playerIndex);
-                    playedCard.setColor(color);
-                } else {
-                    // AI chooses color
-                    int color = chooseRandomColor();
-                    playedCard.setColor(color);
-                    System.out.println("AI Player " + (playerIndex + 1) + " chose color: " + getColorName(color));
-                }
-                break;
-            case 14: // Wild Draw Four
-                System.out.println("Player " + (playerIndex + 1) + " played Wild Draw Four. Next player must draw 4 cards.");
-                executeDraw(getNextActivePlayer(currentPlayerIndex), 4);
-                if (playerIndex == humanPlayerIndex) {
-                    // Human player chooses color
-                    int color = promptColorSelection(playerIndex);
-                    playedCard.setColor(color);
-                } else {
-                    // AI chooses color
-                    int color = chooseRandomColor();
-                    playedCard.setColor(color);
-                    System.out.println("AI Player " + (playerIndex + 1) + " chose color: " + getColorName(color));
-                }
-                currentPlayerIndex = getNextActivePlayer(currentPlayerIndex);
-                break;
         }
     }
 

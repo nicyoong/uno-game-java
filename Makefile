@@ -10,6 +10,8 @@ SOURCES := $(SRC_DIR)/CollectionOfUnoCards.java \
            $(SRC_DIR)/SinglePlayerUno.java \
            $(SRC_DIR)/Uno.java \
            $(SRC_DIR)/UnoCard.java \
+		   $(SRC_DIR)/CardEffectHandler.java \
+		   $(SRC_DIR)/SingleCardEffectHandler.java \
            $(SRC_DIR)/UnoGameLauncher.java
 
 # Compile all .java files to .class files in the bin directory
