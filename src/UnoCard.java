@@ -43,9 +43,14 @@ public class UnoCard {
         }
     }
 
-    // Check if this card can be played on another card
     public boolean canPlay(UnoCard other) {
-        return this.color == other.color || this.number == other.number || this.color == -1 || this.number == 14;
+        boolean canPlayCard = (this.color == other.color || this.number == other.number || isWild());
+        return canPlayCard;
+    }
+    
+    private boolean isWild() {
+        boolean isWildCard = (this.color == -1 || this.number == 14);
+        return isWildCard;
     }
 
     // Getters for color and number
