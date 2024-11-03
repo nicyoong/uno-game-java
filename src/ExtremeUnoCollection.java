@@ -2,7 +2,7 @@ import java.util.Random;
 
 public class ExtremeUnoCollection {
 	
-	final private static int MAXCARDS  = 108 * 8;
+	final private static int MAXCARDS  = 112 * 8;
 	 
 	private UnoCard[] cards;
 	private int numCards;
@@ -61,7 +61,7 @@ public class ExtremeUnoCollection {
 	public void makeExtremeDeck(int numberOfPlayers, String gameMode) {
         // Determine how many decks are needed based on the number of players
         int decksNeeded = (int) Math.ceil((double) numberOfPlayers / 8);
-        cards = new UnoCard[108 * decksNeeded]; // Initialize the cards array
+        cards = new UnoCard[112 * decksNeeded]; // Initialize the cards array
 
         // Reset numCards for the new deck creation
         numCards = 0;
@@ -102,6 +102,13 @@ public class ExtremeUnoCollection {
                 cards[numCards] = new UnoCard(-2, 14, gameMode); // Wild Draw Four
                 numCards++;
             }
+
+            if ("42".equals(gameMode) || "Minecraft".equals(gameMode)) {
+                for (int i = 0; i < 4; i++) { // Add 4 Special cards
+                    cards[numCards] = new UnoCard(-1, 15, gameMode); // Special card
+                    numCards++;
+                }
+            }  
         }
 
         // The deck is complete.

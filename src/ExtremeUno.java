@@ -80,6 +80,11 @@ public class ExtremeUno {
             deck.addCard(startingCard); // Return Wild Draw Four to the deck
             deck.shuffle(); // Reshuffle the deck
             startingCard = deck.removeFromTop(); // Draw a new starting card
+        } else if (startingCard.getNumber() == 15) {
+            // This is only for minecraft, we add 42 functionality later
+            System.out.println("Starting card is a Creeper. Player 1 can choose the starting color.");
+            int chosenColor = promptColorSelection(0); // Prompt player 1 for a color
+            startingCard.setColor(chosenColor); // Set chosen color
         }
 
         switch (startingCard.getNumber()) {
@@ -113,6 +118,14 @@ public class ExtremeUno {
 
     public void playGame() {
         Scanner stdin = new Scanner(System.in);
+
+        // Prompt for player name
+        System.out.print("Enter your name: ");
+        String playerName = stdin.nextLine();
+        if (playerName.isEmpty()) {
+            playerName = "You"; // Default name if none is provided
+        }
+
         System.out.println("Starting the game with " + numPlayers + " players!");
 
         // Display initial hands
@@ -152,13 +165,13 @@ public class ExtremeUno {
         for (int i = 0; i < finishingOrder.size(); i++) {
             if (i == 0) { // Check if it's the first player (the winner)
                 if (finishingOrder.get(i) == humanPlayerIndex) {
-                    System.out.println((i + 1) + ": You (Winner)");
+                    System.out.println((i + 1) + ": " + playerName + " (Winner)");
                 } else {
                     System.out.println((i + 1) + ": Player " + (finishingOrder.get(i) + 1) + " (Winner)");
                 }
             } else { // For the rest of the players
                 if (finishingOrder.get(i) == humanPlayerIndex) {
-                    System.out.println((i + 1) + ": You (finished)");
+                    System.out.println((i + 1) + ": " + playerName + " (finished)");
                 } else {
                     System.out.println((i + 1) + ": Player " + (finishingOrder.get(i) + 1) + " (finished)");
                 }
@@ -168,7 +181,7 @@ public class ExtremeUno {
         // Print the last player
         if (lastPlayerIndex != -1) {
             if (lastPlayerIndex == humanPlayerIndex) {
-                System.out.println((finishingOrder.size() + 1) + ": You (still has " + lastPlayerCardCount + " cards)");
+                System.out.println((finishingOrder.size() + 1) + ": " + playerName + " (still has " + lastPlayerCardCount + " cards)");
             } else {
                 System.out.println((finishingOrder.size() + 1) + ": Player " + (lastPlayerIndex + 1) + " (still has " + lastPlayerCardCount + " cards)");
             }
@@ -241,7 +254,7 @@ public class ExtremeUno {
     
                 // Check if the drawn card is a Creeper card
                 if (drawnCard.isCreeper()) {
-                    System.out.println("Player " + playerIndex + " has drawn a Creeper card and must draw 3 more cards.");
+                    System.out.println("Player " + (playerIndex + 1) + " has drawn a Creeper card and must draw 3 more cards.");
     
                     // Draw 3 additional cards as per Creeper rule
                     for (int j = 0; j < 3; j++) {
@@ -471,6 +484,20 @@ public class ExtremeUno {
                     System.out.println("AI Player " + (playerIndex + 1) + " chose color: " + getColorName(color));
                 }
                 currentPlayerIndex = getNextActivePlayer(currentPlayerIndex);
+                break;
+            case 15: // Creeper
+                // This will be changed later when we add 42 gamemode
+                // For now, 15 means creeper which is wild
+                if (playerIndex == humanPlayerIndex) {
+                    // Human player chooses color
+                    int color = promptColorSelection(playerIndex);
+                    playedCard.setColor(color);
+                } else {
+                    // AI chooses color
+                    int color = chooseRandomColor();
+                    playedCard.setColor(color);
+                    System.out.println("AI Player " + (playerIndex + 1) + " chose color: " + getColorName(color));
+                }
                 break;
         }
     }

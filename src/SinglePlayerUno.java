@@ -97,6 +97,12 @@ public class SinglePlayerUno {
 
     public void playGame(String gameMode) {
         Scanner stdin = new Scanner(System.in);
+        // Prompt for player name
+        System.out.print("Enter your name: ");
+        String playerName = stdin.nextLine();
+        if (playerName.isEmpty()) {
+            playerName = "You"; // Default name if none is provided
+        }
         System.out.println("Starting the game with " + numPlayers + " players!");
 
         // Display initial hands
@@ -138,13 +144,13 @@ public class SinglePlayerUno {
         for (int i = 0; i < finishingOrder.size(); i++) {
             if (i == 0) { // Check if it's the first player (the winner)
                 if (finishingOrder.get(i) == humanPlayerIndex) {
-                    System.out.println((i + 1) + ": You (Winner)");
+                    System.out.println((i + 1) + ": " + playerName + " (Winner)");
                 } else {
                     System.out.println((i + 1) + ": Player " + (finishingOrder.get(i) + 1) + " (Winner)");
                 }
             } else { // For the rest of the players
                 if (finishingOrder.get(i) == humanPlayerIndex) {
-                    System.out.println((i + 1) + ": You (finished)");
+                    System.out.println((i + 1) + ": " + playerName + " (finished)");
                 } else {
                     System.out.println((i + 1) + ": Player " + (finishingOrder.get(i) + 1) + " (finished)");
                 }
@@ -154,7 +160,7 @@ public class SinglePlayerUno {
         // Print the last player
         if (lastPlayerIndex != -1) {
             if (lastPlayerIndex == humanPlayerIndex) {
-                System.out.println((finishingOrder.size() + 1) + ": You (still has " + lastPlayerCardCount + " cards)");
+                System.out.println((finishingOrder.size() + 1) + ": " + playerName + " (still has " + lastPlayerCardCount + " cards)");
             } else {
                 System.out.println((finishingOrder.size() + 1) + ": Player " + (lastPlayerIndex + 1) + " (still has " + lastPlayerCardCount + " cards)");
             }
