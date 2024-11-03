@@ -28,7 +28,7 @@ This UNO project is a Java implementation of the classic card game that includes
   
 - **42 Mode**:
   - A special variant of UNO featuring the SegFault card.
-  - The SegFault card introduces unique gameplay mechanics, such as forcing players to draw cards or skip turns.
+  - The SegFault card requires the next player to skip a turn, and following player must draw 2 cards before playing.
   - Adds an extra layer of strategy and unpredictability to the game.
   - Available in both single player and multiplayer formats.
 
