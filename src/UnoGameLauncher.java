@@ -41,12 +41,12 @@ public class UnoGameLauncher {
             // Start Single Player Uno
             System.out.println("Starting Single Player Uno with " + numPlayers + " players...");
             SinglePlayerUno singlePlayerGame = new SinglePlayerUno(numPlayers);
-            singlePlayerGame.playGame(); // Assuming there's a playGame method in SinglePlayerUno
+            singlePlayerGame.playGame(); 
         } else {
             // Start Multiplayer Uno
             System.out.println("Starting Multiplayer Uno with " + numPlayers + " players...");
             Uno multiplayerGame = new Uno(numPlayers);
-            multiplayerGame.playGame(); // Assuming there's a playGame method in Uno
+            multiplayerGame.playGame(); 
         }
 
         scanner.close();
