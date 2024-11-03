@@ -208,15 +208,45 @@ public class SinglePlayerUno {
     }
 
     public void executeDraw(int playerIndex, int numCards) {
+        // Check if the deck has enough cards
         if (deck.getNumCards() < numCards) {
-            System.out.println("Not enough cards in the deck, shuffling discard pile into deck.");
+            System.out.println("Current number of cards in the deck: " + deck.getNumCards());
+            System.out.println("Not enough cards in the deck.");
             shuffleDiscardPileIntoDeck();
         }
         
+        // Now draw the cards
         CollectionOfUnoCards playerHand = hands.get(playerIndex);
         for (int i = 0; i < numCards; i++) {
+            // Reshuffle if deck is empty before drawing each card
+            if (deck.getNumCards() == 0) {
+                System.out.println("Deck is empty.");
+                shuffleDiscardPileIntoDeck();
+            }
+    
+            // Draw a card if deck is not empty
             if (deck.getNumCards() > 0) {
-                playerHand.addCard(deck.removeFromTop());
+                UnoCard drawnCard = deck.removeFromTop();
+                playerHand.addCard(drawnCard);
+    
+                // Check if the drawn card is a Creeper card
+                if (drawnCard.isCreeper()) {
+                    System.out.println("Player " + (playerIndex + 1) + " has drawn a Creeper card and must draw 3 more cards.");
+    
+                    // Draw 3 additional cards as per Creeper rule
+                    for (int j = 0; j < 3; j++) {
+                        // Reshuffle if deck is empty before each additional draw
+                        if (deck.getNumCards() == 0) {
+                            System.out.println("Deck is empty while drawing additional cards for Creeper.");
+                            shuffleDiscardPileIntoDeck();
+                        }
+    
+                        if (deck.getNumCards() > 0) {
+                            UnoCard additionalCard = deck.removeFromTop();
+                            playerHand.addCard(additionalCard);
+                        }
+                    }
+                }
             }
         }
     }
@@ -278,7 +308,7 @@ public class SinglePlayerUno {
         if (player == humanPlayerIndex) { // Human player
             if (!canPlayAnyCard(playerHand, topCard)) {
                 System.out.println("No playable cards. Drawing a card...");
-                playerHand.addCard(deck.removeFromTop());
+                executeDraw(player, 1);
                 if (!canPlayAnyCard(playerHand, topCard)) {
                     System.out.println("You still cannot play. Turn skipped.");
                     currentPlayerIndex = getNextActivePlayer(currentPlayerIndex);
@@ -300,6 +330,10 @@ public class SinglePlayerUno {
             playerHand.remove(cardIndex); // Remove the played card from the hand
             discardPile.addCard(playedCard);
             System.out.println("You played: " + playedCard);
+            // Check if the player has one card left after playing
+            if (playerHand.getNumCards() == 1) {
+                System.out.println("You declare UNO!");
+            }
             singleCardEffectHandler.handleCardEffect(playedCard, player, gameMode, this);
         } else { // AI player
             // Attempt to play a card first
@@ -323,11 +357,15 @@ public class SinglePlayerUno {
                 playerHand.remove(randomIndex);
                 discardPile.addCard(aiPlayedCard);
                 System.out.println("AI Player " + (player + 1) + " played: " + aiPlayedCard);
+                // Check if the player has one card left after playing
+                if (playerHand.getNumCards() == 1) {
+                    System.out.println("AI Player " + (player + 1) + " declares UNO!");
+                }
                 singleCardEffectHandler.handleCardEffect(aiPlayedCard, player, gameMode, this);
                 played = true;
             } else {
                 System.out.println("AI Player " + (player + 1) + " cannot play any card. Drawing a card...");
-                playerHand.addCard(deck.removeFromTop());
+                executeDraw(player, 1);
                 
                 // Check if it can play after drawing
                 if (canPlayAnyCard(playerHand, topCard)) {
@@ -415,7 +453,5 @@ public class SinglePlayerUno {
         discardPile.addCard(topCard); // Keep the top card in the discard pile
     
         System.out.println("The discard pile has been shuffled back into the deck.");
-        System.out.println("Cards in deck: " + deck.getNumCards());
-        System.out.println("Cards in discard pile: " + discardPile.getNumCards());
     }
 }

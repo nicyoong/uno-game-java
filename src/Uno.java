@@ -56,7 +56,6 @@ public class Uno {
         // Initialize the CardEffectHandler
         cardEffectHandler = new CardEffectHandler();
 
-        // 42 gamemode affects this
         cardEffectHandler.handleStartingCardEffect(startingCard, 0, gameMode, this);
     }
 
@@ -248,8 +247,35 @@ public class Uno {
         // Now draw the cards
         CollectionOfUnoCards playerHand = hands.get(playerIndex);
         for (int i = 0; i < numCards; i++) {
+            // Reshuffle if deck is empty before drawing each card
+            if (deck.getNumCards() == 0) {
+                System.out.println("Deck is empty.");
+                shuffleDiscardPileIntoDeck();
+            }
+    
+            // Draw a card if deck is not empty
             if (deck.getNumCards() > 0) {
-                playerHand.addCard(deck.removeFromTop());
+                UnoCard drawnCard = deck.removeFromTop();
+                playerHand.addCard(drawnCard);
+    
+                // Check if the drawn card is a Creeper card
+                if (drawnCard.isCreeper()) {
+                    System.out.println("Player " + (playerIndex + 1) + " has drawn a Creeper card and must draw 3 more cards.");
+    
+                    // Draw 3 additional cards as per Creeper rule
+                    for (int j = 0; j < 3; j++) {
+                        // Reshuffle if deck is empty before each additional draw
+                        if (deck.getNumCards() == 0) {
+                            System.out.println("Deck is empty while drawing additional cards for Creeper.");
+                            shuffleDiscardPileIntoDeck();
+                        }
+    
+                        if (deck.getNumCards() > 0) {
+                            UnoCard additionalCard = deck.removeFromTop();
+                            playerHand.addCard(additionalCard);
+                        }
+                    }
+                }
             }
         }
     }
@@ -269,11 +295,10 @@ public class Uno {
         // Check if the player has a playable card
         if (!playerHand.canPlay(topCard)) {
             System.out.println("No playable cards. Drawing a card...");
-            playerHand.addCard(deck.removeFromTop());
+            executeDraw(player, 1);
             if (!playerHand.canPlay(topCard)) {
                 System.out.println("Still no playable cards. Turn is skipped.");
-                // Do not move to the next player here
-                return; // Exit this turn without moving to next player
+                return;
             }
         }
         
@@ -297,7 +322,6 @@ public class Uno {
         }
         
         // Check for action cards and execute their effects
-        // 42 Gamemode affects this
         cardEffectHandler.handleCardEffect(chosenCard, player, gameMode, this);
     }
      

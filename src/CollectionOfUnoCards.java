@@ -93,9 +93,9 @@ public class CollectionOfUnoCards {
             numCards++;
         }
 
-        if (gameMode.equals("42")) {
-            for (int i = 0; i < 4; i++) { // Add 4 SegFault cards
-                cards[numCards] = new UnoCard(-1, 15, gameMode); // SegFault card
+        if ("42".equals(gameMode) || "Minecraft".equals(gameMode)) {
+            for (int i = 0; i < 4; i++) { // Add 4 Special cards
+                cards[numCards] = new UnoCard(-1, 15, gameMode); // Special card
                 numCards++;
             }
         }   

@@ -228,8 +228,35 @@ public class ExtremeUno {
         
         ExtremeUnoCollection playerHand = hands.get(playerIndex);
         for (int i = 0; i < numCards; i++) {
+            // Reshuffle if deck is empty before drawing each card
+            if (deck.getNumCards() == 0) {
+                System.out.println("Deck is empty.");
+                shuffleDiscardPileIntoDeck();
+            }
+    
+            // Draw a card if deck is not empty
             if (deck.getNumCards() > 0) {
-                playerHand.addCard(deck.removeFromTop());
+                UnoCard drawnCard = deck.removeFromTop();
+                playerHand.addCard(drawnCard);
+    
+                // Check if the drawn card is a Creeper card
+                if (drawnCard.isCreeper()) {
+                    System.out.println("Player " + playerIndex + " has drawn a Creeper card and must draw 3 more cards.");
+    
+                    // Draw 3 additional cards as per Creeper rule
+                    for (int j = 0; j < 3; j++) {
+                        // Reshuffle if deck is empty before each additional draw
+                        if (deck.getNumCards() == 0) {
+                            System.out.println("Deck is empty while drawing additional cards for Creeper.");
+                            shuffleDiscardPileIntoDeck();
+                        }
+    
+                        if (deck.getNumCards() > 0) {
+                            UnoCard additionalCard = deck.removeFromTop();
+                            playerHand.addCard(additionalCard);
+                        }
+                    }
+                }
             }
         }
     }

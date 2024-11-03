@@ -36,7 +36,7 @@ public class CardEffectHandler {
                 game.setCurrentPlayerIndex(game.getNextActivePlayer(game.getCurrentPlayerIndex()));
                 break;
 
-            case 15: // Special Card. SegFault for 42 gamemode
+            case 15: // Special Card.
                 if ("42".equals(gameMode)) {
                     System.out.println("SegFault card played! Choosing a new color...");
                     chosenCard.setColor(game.promptColorSelection(playerIndex));
@@ -87,6 +87,11 @@ public class CardEffectHandler {
                     int nextPlayer = game.getNextActivePlayer(game.getCurrentPlayerIndex());
                     System.out.println("Player " + (nextPlayer + 1) + " draws 2 cards due to the SegFault card!");
                     game.executeDraw(nextPlayer, 2);
+                } else if ("Minecraft".equals(gameMode)) {
+                    System.out.println("Starting card is a Creeper card, we treat this as Wild.");
+                    System.out.println("Player " + (playerIndex + 1) + " can choose the starting color.");
+                    chosenColor = game.promptColorSelection(playerIndex); // Prompt player for a color
+                    startingCard.setColor(chosenColor); // Set chosen color
                 } else {
                     // Logic for other game modes if needed
                     System.out.println("Starting card is a Special card, we treat this as Wild.");

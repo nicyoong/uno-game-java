@@ -33,35 +33,43 @@ public class UnoGameLauncher {
             }
         }
 
-        // Determine the game mode
         String gameMode = "";
         if (choice == 1) {
             System.out.println("Select game mode for Single Player:");
             System.out.println("1: Normal Mode");
             System.out.println("2: 42 Mode");
+            System.out.println("3: Minecraft Mode");
         } else {
             System.out.println("Select game mode for Multiplayer:");
             System.out.println("1: Normal Mode");
             System.out.println("2: 42 Mode");
+            System.out.println("3: Minecraft Mode");
         }
 
         int modeChoice = 0;
 
         while (true) {
-            System.out.print("Enter your choice (1 or 2): ");
+            System.out.print("Enter your choice (1, 2, or 3): ");
             if (scanner.hasNextInt()) {
                 modeChoice = scanner.nextInt();
-                if (modeChoice == 1 || modeChoice == 2) {
-                    gameMode = (modeChoice == 1) ? "Normal" : "42";
-                    break; // Valid input, exit the loop
+                if (modeChoice == 1 || modeChoice == 2 || modeChoice == 3) {
+                    if (modeChoice == 1) {
+                        gameMode = "Normal";
+                    } else if (modeChoice == 2) {
+                        gameMode = "42";
+                    } else {
+                        gameMode = "Minecraft";  // Handles modeChoice == 3
+                    }
+                    break;
                 } else {
-                    System.out.println("Invalid choice. Please select 1 or 2.");
+                    System.out.println("Invalid choice. Please select 1, 2, or 3.");
                 }
             } else {
-                System.out.println("Invalid input. Please enter a number (1 or 2).");
-                scanner.next(); // Clear the invalid input
+                System.out.println("Invalid input. Please enter a number (1, 2, or 3).");
+                scanner.next();
             }
         }
+
 
         // Launch the selected game mode
         if (choice == 1) {
