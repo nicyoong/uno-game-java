@@ -10,8 +10,8 @@ public class ExtremeUnoLauncher {
 
         int numberOfPlayers;
         // Input validation for number of players
-        for (numberOfPlayers = scanner.nextInt(); numberOfPlayers < 2 || numberOfPlayers > 60; numberOfPlayers = scanner.nextInt()) {
-            System.out.print("Invalid number of players. Please enter a number between 2 and 60: ");
+        for (numberOfPlayers = scanner.nextInt(); numberOfPlayers < 2 || numberOfPlayers > 500; numberOfPlayers = scanner.nextInt()) {
+            System.out.print("Invalid number of players. Please enter a number between 2 and 500: ");
         }
 
         System.out.println("Select game mode:");
