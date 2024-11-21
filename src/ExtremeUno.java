@@ -187,6 +187,15 @@ public class ExtremeUno {
             }
         }
 
+        // Determine and display player's rank
+        int playerRank = finishingOrder.indexOf(humanPlayerIndex) + 1; // Rank in the finishingOrder list
+        if (playerRank == 0) { // Player didn't finish, must be the last player
+            playerRank = finishingOrder.size() + 1;
+        }
+        System.out.println("*");
+        System.out.println("Your rank: " + playerRank);
+        System.out.println("*");
+
         stdin.close(); // Close Scanner at the end of the game
     }
 
