@@ -6,7 +6,7 @@ public class ExtremeUnoLauncher {
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter the number of players between 2 and 60: ");
+        System.out.print("Enter the number of players between 2 and 500: ");
 
         int numberOfPlayers;
         // Input validation for number of players
