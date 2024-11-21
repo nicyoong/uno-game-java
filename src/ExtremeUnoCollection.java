@@ -2,7 +2,7 @@ import java.util.Random;
 
 public class ExtremeUnoCollection {
 	
-	final private static int MAXCARDS  = 112 * 125;
+	final private static int MAXCARDS  = 112 * 64;
 	 
 	private UnoCard[] cards;
 	private int numCards;

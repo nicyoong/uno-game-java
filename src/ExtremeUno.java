@@ -7,7 +7,7 @@ public class ExtremeUno {
 
     final private static int NUMCARDSHAND = 7;
     final private static int MIN_PLAYERS = 2;
-    final private static int MAX_PLAYERS = 1000;
+    final private static int MAX_PLAYERS = 500;
 
     private ExtremeUnoCollection deck;
     private ExtremeUnoCollection discardPile;
