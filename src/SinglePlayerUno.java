@@ -375,6 +375,10 @@ public class SinglePlayerUno {
                 aiPlayer.easyAITurn(player, playerHand, topCard, 
                                     discardPile, gameMode, turnMemory, memorySpan);
             }
+            else if (difficulty == 2) {
+                aiPlayer.realisticAITurn(player, playerHand, topCard, 
+                                        discardPile, gameMode, turnMemory, memorySpan);
+            }
         }
     }
 

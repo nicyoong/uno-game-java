@@ -74,8 +74,23 @@ public class UnoGameLauncher {
         if (choice == 1) {
             // Add code to ask for difficulty setting
             int difficulty;
+
+            // Prompt for difficulty
+            System.out.println("Please choose a difficulty level: ");
+            System.out.println("1 - Easy");
+            System.out.println("2 - Realistic");
             
-            difficulty = 1; // We set this to 1 first, later on there will be 2
+            // Validate user input for difficulty
+            while (true) {
+                System.out.print("Enter difficulty (1 or 2): ");
+                difficulty = scanner.nextInt();
+                
+                if (difficulty == 1 || difficulty == 2) {
+                    break; // Valid input, exit loop
+                } else {
+                    System.out.println("Invalid input. Please enter 1 for Easy or 2 for Realistic.");
+                }
+            }
             System.out.println("Starting Single Player Uno with " + 
                                 numPlayers + " players in " + 
                                 gameMode + " mode and difficulty " + 
