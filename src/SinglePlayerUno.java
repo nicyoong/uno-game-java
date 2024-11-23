@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
@@ -105,6 +106,10 @@ public class SinglePlayerUno {
         }
         System.out.println("Starting the game with " + numPlayers + " players!");
 
+        // Initialize memory for the AI (short-term memory for the last n turns)
+        LinkedList<RecentAction> turnMemory = new LinkedList<>();
+        int memorySpan = 12;
+
         // Display initial hands
         System.out.println("Your hand:");
         System.out.println(hands.get(humanPlayerIndex)); // Show only the human player's hand
@@ -114,7 +119,7 @@ public class SinglePlayerUno {
         while (finishingOrder.size() < numPlayers - 1) {
             // Only play the turn if the current player has not finished
             if (!finishingOrder.contains(currentPlayerIndex)) {
-                playTurn(currentPlayerIndex, gameMode);
+                playTurn(currentPlayerIndex, gameMode, turnMemory, memorySpan);
                 checkForWinner(currentPlayerIndex);
             }
 
@@ -300,7 +305,8 @@ public class SinglePlayerUno {
         }
     }
 
-    public void playTurn(int player, String gameMode) {
+    public void playTurn(int player, String gameMode, 
+                        LinkedList<RecentAction> turnMemory, int memorySpan) {
         if (finishingOrder.contains(player)) {
             return; // Skip the turn if player has already finished
         }
@@ -315,8 +321,18 @@ public class SinglePlayerUno {
             if (!canPlayAnyCard(playerHand, topCard)) {
                 System.out.println("No playable cards. Drawing a card...");
                 executeDraw(player, 1);
+                // Record the draw action in memory
+                turnMemory.add(new RecentAction(player, "Drew", null));
+                if (turnMemory.size() > memorySpan) {
+                    turnMemory.removeFirst(); // Ensure memory size is within the limit
+                }
                 if (!canPlayAnyCard(playerHand, topCard)) {
                     System.out.println("You still cannot play. Turn skipped.");
+                    // Record the skipped turn in memory
+                    turnMemory.add(new RecentAction(player, "Skipped", null));
+                    if (turnMemory.size() > memorySpan) {
+                        turnMemory.removeFirst();
+                    }
                     currentPlayerIndex = getNextActivePlayer(currentPlayerIndex);
                     return;
                 }
@@ -336,18 +352,31 @@ public class SinglePlayerUno {
             playerHand.remove(cardIndex); // Remove the played card from the hand
             discardPile.addCard(playedCard);
             System.out.println("You played: " + playedCard);
+
+            // Record the played card in memory
+            turnMemory.add(new RecentAction(player, "Played", playedCard));
+            if (turnMemory.size() > memorySpan) {
+                turnMemory.removeFirst();
+            }
             // Check if the player has one card left after playing
             if (playerHand.getNumCards() == 1) {
                 System.out.println("You declare UNO!");
+                // Record the UNO declaration in memory
+                turnMemory.add(new RecentAction(player, "Declared UNO", null));
+                if (turnMemory.size() > memorySpan) {
+                    turnMemory.removeFirst();
+                }
             }
+
             singleCardEffectHandler.handleCardEffect(playedCard, player, gameMode, this);
         } else { // AI player
-            aiTurn(player, playerHand, topCard, discardPile, gameMode);
+            aiTurn(player, playerHand, topCard, discardPile, gameMode, turnMemory, memorySpan);
         }
     }
     
     public void aiTurn(int player, CollectionOfUnoCards playerHand, 
-                        UnoCard topCard, CollectionOfUnoCards discardPile, String gameMode) {
+                        UnoCard topCard, CollectionOfUnoCards discardPile, 
+                        String gameMode, LinkedList<RecentAction> turnMemory, int memorySpan) {
         // Attempt to play a card first
         boolean played = false;
         List<Integer> playableCardIndices = new ArrayList<>();
@@ -369,10 +398,20 @@ public class SinglePlayerUno {
             playerHand.remove(randomIndex);
             discardPile.addCard(aiPlayedCard);
             System.out.println("AI Player " + (player + 1) + " played: " + aiPlayedCard);
+
+            // Add this action to the turn memory
+            turnMemory.add(new RecentAction(player, "Played", aiPlayedCard));
+            if (turnMemory.size() > memorySpan) {
+                turnMemory.removeFirst(); // Remove the oldest action if memory exceeds the limit
+            }
             
             // Check if the player has one card left after playing
             if (playerHand.getNumCards() == 1) {
                 System.out.println("AI Player " + (player + 1) + " declares UNO!");
+                turnMemory.add(new RecentAction(player, "Declared UNO", null));
+                if (turnMemory.size() > memorySpan) {
+                    turnMemory.removeFirst();
+                }
             }
             
             singleCardEffectHandler.handleCardEffect(aiPlayedCard, player, gameMode, this);
@@ -380,6 +419,12 @@ public class SinglePlayerUno {
         } else {
             System.out.println("AI Player " + (player + 1) + " cannot play any card. Drawing a card...");
             executeDraw(player, 1);
+
+            // Add this action to the turn memory
+            turnMemory.add(new RecentAction(player, "Drew", null));
+            if (turnMemory.size() > memorySpan) {
+                turnMemory.removeFirst();
+            }
             
             // Check if it can play after drawing
             if (canPlayAnyCard(playerHand, topCard)) {
@@ -389,12 +434,21 @@ public class SinglePlayerUno {
                         playerHand.remove(i);
                         discardPile.addCard(aiPlayedCard);
                         System.out.println("AI Player " + (player + 1) + " played: " + aiPlayedCard);
+                        // Add this action to the turn memory
+                        turnMemory.add(new RecentAction(player, "Played", aiPlayedCard));
+                        if (turnMemory.size() > memorySpan) {
+                            turnMemory.removeFirst();
+                        }
                         singleCardEffectHandler.handleCardEffect(aiPlayedCard, player, gameMode, this);
                         break;
                     }
                 }
             } else {
                 System.out.println("AI Player " + (player + 1) + " still cannot play. Turn skipped.");
+                turnMemory.add(new RecentAction(player, "Skipped", null));
+                if (turnMemory.size() > memorySpan) {
+                    turnMemory.removeFirst();
+                }
             }
         }
     }

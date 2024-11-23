@@ -1,81 +1,69 @@
 public class SingleCardEffectHandler {
     
     public void handleCardEffect(UnoCard playedCard, int playerIndex, String gameMode, SinglePlayerUno game) {
-        switch (playedCard.getNumber()) {
-            case 10: // Skip
-                System.out.println("Player " + (playerIndex + 1) + " played Skip. Next player's turn is skipped.");
-                game.setCurrentPlayerIndex(game.getNextActivePlayer(game.getCurrentPlayerIndex()));
-                break;
-            case 11: // Reverse
-                System.out.println("Player " + (playerIndex + 1) + " played Reverse. Turn order is reversed.");
-                game.setClockwise(!game.isClockwise());
-                break;
-            case 12: // Draw Two
-                System.out.println("Player " + (playerIndex + 1) + " played Draw Two. Next player must draw 2 cards.");
-                game.executeDraw(game.getNextActivePlayer(game.getCurrentPlayerIndex()), 2);
-                game.setCurrentPlayerIndex(game.getNextActivePlayer(game.getCurrentPlayerIndex()));
-                break;
-            case 13: // Wild
-                if (playerIndex == game.humanPlayerIndex) {
-                    // Human player chooses color
-                    int color = game.promptColorSelection(playerIndex);
-                    playedCard.setColor(color);
-                } else {
-                    // AI chooses color
-                    int color = game.chooseRandomColor();
-                    playedCard.setColor(color);
-                    System.out.println("AI Player " + (playerIndex + 1) + " chose color: " + game.getColorName(color));
-                }
-                break;
-            case 14: // Wild Draw Four
-                System.out.println("Player " + (playerIndex + 1) + " played Wild Draw Four. Next player must draw 4 cards.");
-                if (playerIndex == game.humanPlayerIndex) {
-                    // Human player chooses color
-                    int color = game.promptColorSelection(playerIndex);
-                    playedCard.setColor(color);
-                } else {
-                    // AI chooses color
-                    int color = game.chooseRandomColor();
-                    playedCard.setColor(color);
-                    System.out.println("AI Player " + (playerIndex + 1) + " chose color: " + game.getColorName(color));
-                }
-                game.executeDraw(game.getNextActivePlayer(game.getCurrentPlayerIndex()), 4);
-                game.setCurrentPlayerIndex(game.getNextActivePlayer(game.getCurrentPlayerIndex()));
-                break;
-            case 15: // SegFault Card
-                if ("42".equals(gameMode))
-                {
-                    System.out.println("SegFault card played! Choosing a new color...");
-                    
-                    // Set the color for the SegFault card
-                    if (playerIndex == game.humanPlayerIndex) {
-                        // Human player chooses color
-                        int color = game.promptColorSelection(playerIndex);
-                        playedCard.setColor(color);
-                    } else {
-                        // AI chooses color
-                        int color = game.chooseRandomColor();
-                        playedCard.setColor(color);
-                        System.out.println("AI Player " + (playerIndex + 1) + " chose color: " + game.getColorName(color));
-                    }
-                    System.out.println("Player " + (game.getNextActivePlayer(game.getCurrentPlayerIndex()) + 1) + "'s turn is skipped.");
-                    game.setCurrentPlayerIndex(game.getNextActivePlayer(game.getCurrentPlayerIndex()));
-                    System.out.println("Player " + (game.getNextActivePlayer(game.getCurrentPlayerIndex()) + 1) + " must draw 2 cards.");
-                    game.executeDraw(game.getNextActivePlayer(game.getCurrentPlayerIndex()), 2);
-                } else {
-                    // Logic for other game modes if needed, for now special cards are wild cards
-                    if (playerIndex == game.humanPlayerIndex) {
-                        // Human player chooses color
-                        int color = game.promptColorSelection(playerIndex);
-                        playedCard.setColor(color);
-                    } else {
-                        // AI chooses color
-                        int color = game.chooseRandomColor();
-                        playedCard.setColor(color);
-                        System.out.println("AI Player " + (playerIndex + 1) + " chose color: " + game.getColorName(color));
-                    }
-                }
-                break;
+        int cardNumber = playedCard.getNumber();
+    
+        if (cardNumber == 10) {
+            handleSkipCard(playerIndex, game);
+        } else if (cardNumber == 11) {
+            handleReverseCard(playerIndex, game);
+        } else if (cardNumber == 12) {
+            handleDrawTwoCard(playerIndex, game);
+        } else if (cardNumber == 13) {
+            handleWildCard(playedCard, playerIndex, game);
+        } else if (cardNumber == 14) {
+            handleWildDrawFourCard(playedCard, playerIndex, game);
+        } else if (cardNumber == 15) {
+            handleSegFaultCard(playedCard, playerIndex, gameMode, game);
+        }
+    }
+    
+    private void handleSkipCard(int playerIndex, SinglePlayerUno game) {
+        System.out.println("Player " + (playerIndex + 1) + " played Skip. Next player's turn is skipped.");
+        game.setCurrentPlayerIndex(game.getNextActivePlayer(game.getCurrentPlayerIndex()));
+    }
+    
+    private void handleReverseCard(int playerIndex, SinglePlayerUno game) {
+        System.out.println("Player " + (playerIndex + 1) + " played Reverse. Turn order is reversed.");
+        game.setClockwise(!game.isClockwise());
+    }
+    
+    private void handleDrawTwoCard(int playerIndex, SinglePlayerUno game) {
+        System.out.println("Player " + (playerIndex + 1) + " played Draw Two. Next player must draw 2 cards.");
+        game.executeDraw(game.getNextActivePlayer(game.getCurrentPlayerIndex()), 2);
+        game.setCurrentPlayerIndex(game.getNextActivePlayer(game.getCurrentPlayerIndex()));
+    }
+    
+    private void handleWildCard(UnoCard playedCard, int playerIndex, SinglePlayerUno game) {
+        if (playerIndex == game.humanPlayerIndex) {
+            // Human player chooses color
+            int color = game.promptColorSelection(playerIndex);
+            playedCard.setColor(color);
+        } else {
+            // AI chooses color
+            int color = game.chooseRandomColor();
+            playedCard.setColor(color);
+            System.out.println("AI Player " + (playerIndex + 1) + " chose color: " + game.getColorName(color));
+        }
+    }
+    
+    private void handleWildDrawFourCard(UnoCard playedCard, int playerIndex, SinglePlayerUno game) {
+        System.out.println("Player " + (playerIndex + 1) + " played Wild Draw Four. Next player must draw 4 cards.");
+        handleWildCard(playedCard, playerIndex, game);
+        game.executeDraw(game.getNextActivePlayer(game.getCurrentPlayerIndex()), 4);
+        game.setCurrentPlayerIndex(game.getNextActivePlayer(game.getCurrentPlayerIndex()));
+    }
+    
+    private void handleSegFaultCard(UnoCard playedCard, int playerIndex, String gameMode, SinglePlayerUno game) {
+        if ("42".equals(gameMode)) {
+            System.out.println("SegFault card played! Choosing a new color...");
+            handleWildCard(playedCard, playerIndex, game);
+            System.out.println("Player " + (game.getNextActivePlayer(game.getCurrentPlayerIndex()) + 1) + "'s turn is skipped.");
+            game.setCurrentPlayerIndex(game.getNextActivePlayer(game.getCurrentPlayerIndex()));
+            System.out.println("Player " + (game.getNextActivePlayer(game.getCurrentPlayerIndex()) + 1) + " must draw 2 cards.");
+            game.executeDraw(game.getNextActivePlayer(game.getCurrentPlayerIndex()), 2);
+        } else {
+            handleWildCard(playedCard, playerIndex, game);
         }
     }
 

@@ -1,64 +1,74 @@
 public class CardEffectHandler {
     
     public void handleCardEffect(UnoCard chosenCard, int playerIndex, String gameMode, Uno game) {
-        switch (chosenCard.getNumber()) {
-            case 10: // Skip
-                System.out.println("Next player is skipped!");
-                game.checkForWinner(game.getCurrentPlayerIndex());
-                game.setCurrentPlayerIndex(game.getNextActivePlayer(game.getCurrentPlayerIndex()));
-                break;
-
-            case 11: // Reverse
-                System.out.println("Turn order reversed!");
-                game.setClockwise(!game.isClockwise()); // Reverse the direction of play
-                break;
-
-            case 12: // Draw Two
-                System.out.println("Next player draws two cards!");
-                game.checkForWinner(game.getCurrentPlayerIndex());
-                int nextPlayer = game.getNextActivePlayer(game.getCurrentPlayerIndex());
-                game.executeDraw(nextPlayer, 2);
-                game.setCurrentPlayerIndex(game.getNextActivePlayer(game.getCurrentPlayerIndex()));
-                break;
-
-            case 13: // Wild
-                System.out.println("Wild card played! Choosing a new color...");
-                chosenCard.setColor(game.promptColorSelection(playerIndex));
-                break;
-
-            case 14: // Wild Draw Four
-                System.out.println("Wild Draw Four card played! Choosing a new color...");
-                chosenCard.setColor(game.promptColorSelection(playerIndex));
-                System.out.println("Next player draws four cards!");
-                game.checkForWinner(game.getCurrentPlayerIndex());
-                nextPlayer = game.getNextActivePlayer(game.getCurrentPlayerIndex());
-                game.executeDraw(nextPlayer, 4);
-                game.setCurrentPlayerIndex(game.getNextActivePlayer(game.getCurrentPlayerIndex()));
-                break;
-
-            case 15: // Special Card.
-                if ("42".equals(gameMode)) {
-                    System.out.println("SegFault card played! Choosing a new color...");
-                    chosenCard.setColor(game.promptColorSelection(playerIndex));
-                    nextPlayer = game.getNextActivePlayer(game.getCurrentPlayerIndex());
-                    System.out.println("Player " + (nextPlayer + 1) + " is skipped!");
-                    game.checkForWinner(nextPlayer);
-                    game.setCurrentPlayerIndex(game.getNextActivePlayer(game.getCurrentPlayerIndex()));
-                    int followingPlayer = game.getNextActivePlayer(game.getCurrentPlayerIndex());
-                    System.out.println("Player " + (followingPlayer + 1) + " draws 2 cards due to the SegFault card!");
-                    game.executeDraw(followingPlayer, 2);
-                } else {
-                    // Logic for other game modes if needed
-                    System.out.println("Wild card played! Choosing a new color...");
-                    chosenCard.setColor(game.promptColorSelection(playerIndex));
-                }
-                break;
-
-            default:
-                // No action for regular cards
-                break;
+        int cardNumber = chosenCard.getNumber();
+        
+        if (cardNumber == 10) { // Skip
+            handleSkip(game);
+        } else if (cardNumber == 11) { // Reverse
+            handleReverse(game);
+        } else if (cardNumber == 12) { // Draw Two
+            handleDrawTwo(chosenCard, playerIndex, game);
+        } else if (cardNumber == 13) { // Wild
+            handleWild(chosenCard, playerIndex, game);
+        } else if (cardNumber == 14) { // Wild Draw Four
+            handleWildDrawFour(chosenCard, playerIndex, game);
+        } else if (cardNumber == 15) { // Special Card
+            handleSpecialCard(chosenCard, playerIndex, gameMode, game);
         }
     }
+    
+    private void handleSkip(Uno game) {
+        System.out.println("Next player is skipped!");
+        game.checkForWinner(game.getCurrentPlayerIndex());
+        game.setCurrentPlayerIndex(game.getNextActivePlayer(game.getCurrentPlayerIndex()));
+    }
+    
+    private void handleReverse(Uno game) {
+        System.out.println("Turn order reversed!");
+        game.setClockwise(!game.isClockwise()); // Reverse the direction of play
+    }
+    
+    private void handleDrawTwo(UnoCard chosenCard, int playerIndex, Uno game) {
+        System.out.println("Next player draws two cards!");
+        game.checkForWinner(game.getCurrentPlayerIndex());
+        int nextPlayer = game.getNextActivePlayer(game.getCurrentPlayerIndex());
+        game.executeDraw(nextPlayer, 2);
+        game.setCurrentPlayerIndex(game.getNextActivePlayer(game.getCurrentPlayerIndex()));
+    }
+    
+    private void handleWild(UnoCard chosenCard, int playerIndex, Uno game) {
+        System.out.println("Wild card played! Choosing a new color...");
+        chosenCard.setColor(game.promptColorSelection(playerIndex));
+    }
+    
+    private void handleWildDrawFour(UnoCard chosenCard, int playerIndex, Uno game) {
+        System.out.println("Wild Draw Four card played! Choosing a new color...");
+        chosenCard.setColor(game.promptColorSelection(playerIndex));
+        System.out.println("Next player draws four cards!");
+        game.checkForWinner(game.getCurrentPlayerIndex());
+        int nextPlayer = game.getNextActivePlayer(game.getCurrentPlayerIndex());
+        game.executeDraw(nextPlayer, 4);
+        game.setCurrentPlayerIndex(game.getNextActivePlayer(game.getCurrentPlayerIndex()));
+    }
+    
+    private void handleSpecialCard(UnoCard chosenCard, int playerIndex, String gameMode, Uno game) {
+        if ("42".equals(gameMode)) {
+            System.out.println("SegFault card played! Choosing a new color...");
+            chosenCard.setColor(game.promptColorSelection(playerIndex));
+            int nextPlayer = game.getNextActivePlayer(game.getCurrentPlayerIndex());
+            System.out.println("Player " + (nextPlayer + 1) + " is skipped!");
+            game.checkForWinner(nextPlayer);
+            game.setCurrentPlayerIndex(game.getNextActivePlayer(game.getCurrentPlayerIndex()));
+            int followingPlayer = game.getNextActivePlayer(game.getCurrentPlayerIndex());
+            System.out.println("Player " + (followingPlayer + 1) + " draws 2 cards due to the SegFault card!");
+            game.executeDraw(followingPlayer, 2);
+        } else {
+            System.out.println("Wild card played! Choosing a new color...");
+            chosenCard.setColor(game.promptColorSelection(playerIndex));
+        }
+    }
+    
 
     public void handleStartingCardEffect(UnoCard startingCard, int playerIndex, String gameMode, Uno game) {
         switch (startingCard.getNumber()) {
