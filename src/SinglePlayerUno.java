@@ -96,7 +96,7 @@ public class SinglePlayerUno {
         }
     }
 
-    public void playGame(String gameMode) {
+    public void playGame(String gameMode, int difficulty) {
         Scanner stdin = new Scanner(System.in);
         // Prompt for player name
         System.out.print("Enter your name: ");
@@ -119,7 +119,7 @@ public class SinglePlayerUno {
         while (finishingOrder.size() < numPlayers - 1) {
             // Only play the turn if the current player has not finished
             if (!finishingOrder.contains(currentPlayerIndex)) {
-                playTurn(currentPlayerIndex, gameMode, turnMemory, memorySpan);
+                playTurn(currentPlayerIndex, gameMode, difficulty, turnMemory, memorySpan);
                 checkForWinner(currentPlayerIndex);
             }
 
@@ -305,7 +305,7 @@ public class SinglePlayerUno {
         }
     }
 
-    public void playTurn(int player, String gameMode, 
+    public void playTurn(int player, String gameMode, int difficulty,
                         LinkedList<RecentAction> turnMemory, int memorySpan) {
         if (finishingOrder.contains(player)) {
             return; // Skip the turn if player has already finished
@@ -371,7 +371,10 @@ public class SinglePlayerUno {
             singleCardEffectHandler.handleCardEffect(playedCard, player, gameMode, this);
         } else { // AI player
             AIPlayer aiPlayer = new AIPlayer(this);
-            aiPlayer.aiTurn(player, playerHand, topCard, discardPile, gameMode, turnMemory, memorySpan);
+            if (difficulty == 1) {
+                aiPlayer.easyAITurn(player, playerHand, topCard, 
+                                    discardPile, gameMode, turnMemory, memorySpan);
+            }
         }
     }
 

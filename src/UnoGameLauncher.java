@@ -70,12 +70,18 @@ public class UnoGameLauncher {
             }
         }
 
-
         // Launch the selected game mode
         if (choice == 1) {
-            System.out.println("Starting Single Player Uno with " + numPlayers + " players in " + gameMode + " mode...");
+            // Add code to ask for difficulty setting
+            int difficulty;
+            
+            difficulty = 1; // We set this to 1 first, later on there will be 2
+            System.out.println("Starting Single Player Uno with " + 
+                                numPlayers + " players in " + 
+                                gameMode + " mode and difficulty " + 
+                                difficulty + "...");
             SinglePlayerUno singlePlayerGame = new SinglePlayerUno(numPlayers, gameMode);
-            singlePlayerGame.playGame(gameMode);
+            singlePlayerGame.playGame(gameMode, difficulty);
         } else {
             System.out.println("Starting Multiplayer Uno with " + numPlayers + " players in " + gameMode + " mode...");
             Uno multiplayerGame = new Uno(numPlayers, gameMode);

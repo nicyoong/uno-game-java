@@ -13,7 +13,7 @@ public class AIPlayer {
         this.singleCardEffectHandler = new SingleCardEffectHandler();
     }
 
-    public void aiTurn(int player, CollectionOfUnoCards playerHand, 
+    public void easyAITurn(int player, CollectionOfUnoCards playerHand, 
                         UnoCard topCard, CollectionOfUnoCards discardPile, 
                         String gameMode, LinkedList<RecentAction> turnMemory, int memorySpan) {
         // Attempt to play a card first
