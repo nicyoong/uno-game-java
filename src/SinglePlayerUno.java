@@ -342,56 +342,62 @@ public class SinglePlayerUno {
             }
             singleCardEffectHandler.handleCardEffect(playedCard, player, gameMode, this);
         } else { // AI player
-            // Attempt to play a card first
-            boolean played = false;
-            List<Integer> playableCardIndices = new ArrayList<>();
-    
-            // Check for playable cards in the AI's hand
-            for (int i = 0; i < playerHand.getNumCards(); i++) {
-                UnoCard aiPlayedCard = playerHand.getCard(i);
-                if (canPlay(aiPlayedCard, topCard)) {
-                    playableCardIndices.add(i);
-                }
-            }
-    
-            // If there are playable cards, choose one randomly
-            if (!playableCardIndices.isEmpty()) {
-                Random random = new Random();
-                int randomIndex = playableCardIndices.get(random.nextInt(playableCardIndices.size()));
-                UnoCard aiPlayedCard = playerHand.getCard(randomIndex);
-                
-                playerHand.remove(randomIndex);
-                discardPile.addCard(aiPlayedCard);
-                System.out.println("AI Player " + (player + 1) + " played: " + aiPlayedCard);
-                // Check if the player has one card left after playing
-                if (playerHand.getNumCards() == 1) {
-                    System.out.println("AI Player " + (player + 1) + " declares UNO!");
-                }
-                singleCardEffectHandler.handleCardEffect(aiPlayedCard, player, gameMode, this);
-                played = true;
-            } else {
-                System.out.println("AI Player " + (player + 1) + " cannot play any card. Drawing a card...");
-                executeDraw(player, 1);
-                
-                // Check if it can play after drawing
-                if (canPlayAnyCard(playerHand, topCard)) {
-                    for (int i = 0; i < playerHand.getNumCards(); i++) {
-                        UnoCard aiPlayedCard = playerHand.getCard(i);
-                        if (canPlay(aiPlayedCard, topCard)) {
-                            playerHand.remove(i);
-                            discardPile.addCard(aiPlayedCard);
-                            System.out.println("AI Player " + (player + 1) + " played: " + aiPlayedCard);
-                            singleCardEffectHandler.handleCardEffect(aiPlayedCard, player, gameMode, this);
-                            break;
-                        }
-                    }
-                } else {
-                    System.out.println("AI Player " + (player + 1) + " still cannot play. Turn skipped.");
-                }
-            }
-        }        
+            aiTurn(player, playerHand, topCard, discardPile, gameMode);
+        }
     }
     
+    public void aiTurn(int player, CollectionOfUnoCards playerHand, 
+                        UnoCard topCard, CollectionOfUnoCards discardPile, String gameMode) {
+        // Attempt to play a card first
+        boolean played = false;
+        List<Integer> playableCardIndices = new ArrayList<>();
+
+        // Check for playable cards in the AI's hand
+        for (int i = 0; i < playerHand.getNumCards(); i++) {
+            UnoCard aiPlayedCard = playerHand.getCard(i);
+            if (canPlay(aiPlayedCard, topCard)) {
+                playableCardIndices.add(i);
+            }
+        }
+
+        // If there are playable cards, choose one randomly
+        if (!playableCardIndices.isEmpty()) {
+            Random random = new Random();
+            int randomIndex = playableCardIndices.get(random.nextInt(playableCardIndices.size()));
+            UnoCard aiPlayedCard = playerHand.getCard(randomIndex);
+            
+            playerHand.remove(randomIndex);
+            discardPile.addCard(aiPlayedCard);
+            System.out.println("AI Player " + (player + 1) + " played: " + aiPlayedCard);
+            
+            // Check if the player has one card left after playing
+            if (playerHand.getNumCards() == 1) {
+                System.out.println("AI Player " + (player + 1) + " declares UNO!");
+            }
+            
+            singleCardEffectHandler.handleCardEffect(aiPlayedCard, player, gameMode, this);
+            played = true;
+        } else {
+            System.out.println("AI Player " + (player + 1) + " cannot play any card. Drawing a card...");
+            executeDraw(player, 1);
+            
+            // Check if it can play after drawing
+            if (canPlayAnyCard(playerHand, topCard)) {
+                for (int i = 0; i < playerHand.getNumCards(); i++) {
+                    UnoCard aiPlayedCard = playerHand.getCard(i);
+                    if (canPlay(aiPlayedCard, topCard)) {
+                        playerHand.remove(i);
+                        discardPile.addCard(aiPlayedCard);
+                        System.out.println("AI Player " + (player + 1) + " played: " + aiPlayedCard);
+                        singleCardEffectHandler.handleCardEffect(aiPlayedCard, player, gameMode, this);
+                        break;
+                    }
+                }
+            } else {
+                System.out.println("AI Player " + (player + 1) + " still cannot play. Turn skipped.");
+            }
+        }
+    }
 
     private boolean canPlay(UnoCard cardToPlay, UnoCard topCard) {
         boolean[] conditions = new boolean[]{
