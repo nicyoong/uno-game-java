@@ -52,5 +52,8 @@ fclean: clean
 	@echo "Removing binary directory..."
 	@rm -rf $(BIN_DIR)
 
+# Recompile
+re: fclean all
+
 # Phony targets
-.PHONY: all clean fclean run run_extreme
+.PHONY: all clean fclean re run run_extreme
