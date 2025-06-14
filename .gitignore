@@ -1,4 +1,5 @@
 # Ignore all files in bin directory
 /bin/
-
+/.idea/
+*.iml
 concatenate_filenames.py
