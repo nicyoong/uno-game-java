@@ -170,23 +170,18 @@ public class CollectionOfUnoCards {
         }
     }
 
-    public boolean canPlayExcludingWildDrawFour(UnoCard c) {
-        // Flag to track if there are any playable cards excluding Wild Draw Four
-        boolean hasPlayableCard = false;
-    
+    public boolean canPlayExcludingWildDrawFour(UnoCard topCard) {
+        // Look for any non–Wild-Draw-Four card in hand that matches the current color
         for (int i = 0; i < numCards; i++) {
-            // Check if the current card can be played on the given card
-            if (cards[i].canPlay(c)) {
-                // If the card is playable and it's not a Wild Draw Four, set flag and break
-                if (cards[i].getNumber() != 14) { // Assuming 14 is Wild Draw Four
-                    hasPlayableCard = true;
-                    break; // No need to check further
-                }
+            UnoCard card = cards[i];
+            if (card.getNumber() == 14) {
+                continue;
+            }
+            if (card.getColor() == topCard.getColor()) {
+                return true;
             }
         }
-    
-        // Return whether there are playable cards excluding Wild Draw Four
-        return hasPlayableCard;
+        return false;
     }
 	
 	// Returns the in position index.
