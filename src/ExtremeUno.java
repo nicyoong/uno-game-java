@@ -138,7 +138,6 @@ public class ExtremeUno {
             // Only play the turn if the current player has not finished
             if (!finishingOrder.contains(currentPlayerIndex)) {
                 playTurn(currentPlayerIndex);
-                checkForWinner(currentPlayerIndex);
             }
 
             // Move to the next player
@@ -376,6 +375,10 @@ public class ExtremeUno {
             playerHand.remove(cardIndex); // Remove the played card from the hand
             discardPile.addCard(playedCard);
             System.out.println("You played: " + playedCard);
+            if (playerHand.getNumCards() == 1) {
+                System.out.println("You declare UNO!");
+            }
+            checkForWinner(player);
             handleCardEffect(playedCard, player);
         } else { // AI player
             // Attempt to play a card first
@@ -399,6 +402,10 @@ public class ExtremeUno {
                 playerHand.remove(randomIndex);
                 discardPile.addCard(aiPlayedCard);
                 System.out.println("AI Player " + (player + 1) + " played: " + aiPlayedCard);
+                if (playerHand.getNumCards() == 1) {
+                    System.out.println("AI Player " + (player + 1) + " declares UNO!");
+                }
+                checkForWinner(player);
                 handleCardEffect(aiPlayedCard, player);
                 played = true;
             } else {

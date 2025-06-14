@@ -52,6 +52,9 @@ public class AIPlayer {
                     turnMemory.removeFirst();
                 }
             }
+
+            // Check if the player has no cards left, declare win if there are no cards
+            game.checkForWinner(player);
             
             singleCardEffectHandler.handleCardEffect(aiPlayedCard, player, gameMode, game);
             played = true;
@@ -101,6 +104,9 @@ public class AIPlayer {
                     turnMemory.removeFirst();
                 }
             }
+
+            // Check if the player has no cards left, declare win if there are no cards
+            game.checkForWinner(player);
             
             singleCardEffectHandler.handleCardEffect(aiPlayedCard, player, gameMode, game);
             played = true;

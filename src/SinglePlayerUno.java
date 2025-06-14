@@ -86,7 +86,7 @@ public class SinglePlayerUno {
         return random.nextInt(4); // Randomly select a color (0-3)
     }    
 
-    private void checkForWinner(int playerIndex) {
+    public void checkForWinner(int playerIndex) {
         if (hands.get(playerIndex).getNumCards() == 0) {
             System.out.println("Player " + (playerIndex + 1) + " has finished!");
             finishingOrder.add(playerIndex);
@@ -120,7 +120,6 @@ public class SinglePlayerUno {
             // Only play the turn if the current player has not finished
             if (!finishingOrder.contains(currentPlayerIndex)) {
                 playTurn(currentPlayerIndex, gameMode, difficulty, turnMemory, memorySpan);
-                checkForWinner(currentPlayerIndex);
             }
 
             // Move to the next player
@@ -367,6 +366,8 @@ public class SinglePlayerUno {
                     turnMemory.removeFirst();
                 }
             }
+            // Check if the player has no cards left, declare win if there are no cards
+            checkForWinner(player);
 
             singleCardEffectHandler.handleCardEffect(playedCard, player, gameMode, this);
         } else { // AI player

@@ -104,7 +104,6 @@ public class Uno {
             // Only play the turn if the current player has not finished
             if (!finishingOrder.contains(currentPlayerIndex)) {
                 playTurn(currentPlayerIndex, gameMode);
-                checkForWinner(currentPlayerIndex);
             }
             
             // Move to the next player
@@ -320,6 +319,8 @@ public class Uno {
         if (playerHand.getNumCards() == 1) {
             System.out.println("Player " + (player + 1) + " declares UNO!");
         }
+
+        checkForWinner(currentPlayerIndex);
         
         // Check for action cards and execute their effects
         cardEffectHandler.handleCardEffect(chosenCard, player, gameMode, this);
