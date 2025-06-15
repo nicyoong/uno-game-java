@@ -2,7 +2,7 @@ package uno.ai;
 
 import uno.model.RecentAction;
 import uno.effects.SingleCardEffectHandler;
-import uno.singleplayergame.GameFlowController;
+import uno.game.SinglePlayerUno;
 import uno.cards.CollectionOfUnoCards;
 import uno.cards.UnoCard;
 
@@ -13,10 +13,10 @@ import java.util.Random;
 
 public class AIPlayer {
 
-    private GameFlowController game;
+    private SinglePlayerUno game;
     private SingleCardEffectHandler singleCardEffectHandler;
 
-    public AIPlayer(GameFlowController game) {
+    public AIPlayer(SinglePlayerUno game) {
         this.game = game;
         this.singleCardEffectHandler = new SingleCardEffectHandler();
     }
@@ -138,7 +138,7 @@ public class AIPlayer {
 
     private void handleDrawIfCannotPlay(CollectionOfUnoCards playerHand, UnoCard topCard, int player,
                                         LinkedList<RecentAction> turnMemory, int memorySpan,
-                                        String gameMode, GameFlowController game,
+                                        String gameMode, SinglePlayerUno game,
                                         SingleCardEffectHandler singleCardEffectHandler,
                                         CollectionOfUnoCards discardPile) {
         System.out.println("AI Player " + (player + 1) + " cannot play any card. Drawing a card...");
