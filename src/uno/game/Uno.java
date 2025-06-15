@@ -64,8 +64,6 @@ public class Uno {
                 playTurn(currentPlayer, gameMode);
             }
 
-            gameState.setCurrentPlayerIndex(gameState.getNextActivePlayer(currentPlayer));
-
             if (deckManager.getDeck().getNumCards() == 0) {
                 deckManager.shuffleDiscardPileIntoDeck();
             }
@@ -86,6 +84,9 @@ public class Uno {
             playerManager.executeDraw(player, 1, deckManager);
             if (!hand.canPlay(topCard)) {
                 outputRenderer.showMessage("Still no playable cards. Turn skipped.");
+                gameState.setCurrentPlayerIndex(
+                        gameState.getNextActivePlayer(player)
+                );
                 return;
             }
         }

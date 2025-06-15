@@ -11,26 +11,32 @@ public class CardEffectHandler {
     public void handleCardEffect(UnoCard chosenCard, int playerIndex,
                                  String gameMode, Uno game) {
         int cardNumber = chosenCard.getNumber();
+        GameStateManager state = game.getGameState();
 
         if (cardNumber == 10) { // Skip
             handleSkip(game);
         } else if (cardNumber == 11) { // Reverse
             handleReverse(game);
+            state.setCurrentPlayerIndex(state.getNextActivePlayer(state.getCurrentPlayerIndex()));
         } else if (cardNumber == 12) { // Draw Two
             handleDrawTwo(game);
         } else if (cardNumber == 13) { // Wild
             handleWild(chosenCard, playerIndex, game);
+            state.setCurrentPlayerIndex(state.getNextActivePlayer(state.getCurrentPlayerIndex()));
         } else if (cardNumber == 14) { // Wild Draw Four
             handleWildDrawFour(chosenCard, playerIndex, game);
         } else if (cardNumber == 15) { // Special Card
             handleSpecialCard(chosenCard, playerIndex, gameMode, game);
+        } else {
+            state.setCurrentPlayerIndex(state.getNextActivePlayer(state.getCurrentPlayerIndex()));
         }
     }
 
     private void handleSkip(Uno game) {
         outputRenderer.showMessage("Next player is skipped!");
         GameStateManager state = game.getGameState();
-        state.setCurrentPlayerIndex(state.getNextActivePlayer(state.getCurrentPlayerIndex()));
+        int nextPlayer = state.getNextActivePlayer(state.getCurrentPlayerIndex());
+        state.setCurrentPlayerIndex(state.getNextActivePlayer(nextPlayer));
     }
 
     private void handleReverse(Uno game) {
@@ -40,11 +46,11 @@ public class CardEffectHandler {
     }
 
     private void handleDrawTwo(Uno game) {
-        outputRenderer.showMessage("Next player draws two cards!");
+        outputRenderer.showMessage("Next player draws two cards and is skipped!");
         GameStateManager state = game.getGameState();
         int nextPlayer = state.getNextActivePlayer(state.getCurrentPlayerIndex());
         game.executeDraw(nextPlayer, 2);
-        state.setCurrentPlayerIndex(state.getNextActivePlayer(state.getCurrentPlayerIndex()));
+        state.setCurrentPlayerIndex(state.getNextActivePlayer(nextPlayer));
     }
 
     private void handleWild(UnoCard chosenCard, int playerIndex, Uno game) {
@@ -57,12 +63,13 @@ public class CardEffectHandler {
     private void handleWildDrawFour(UnoCard chosenCard, int playerIndex, Uno game) {
         outputRenderer.showMessage("Wild Draw Four card played! Choosing a new color...");
         handleWild(chosenCard, playerIndex, game);
-        outputRenderer.showMessage("Next player draws four cards!");
+        outputRenderer.showMessage("Next player draws four cards and is skipped!");
 
         GameStateManager state = game.getGameState();
         int nextPlayer = state.getNextActivePlayer(state.getCurrentPlayerIndex());
         game.executeDraw(nextPlayer, 4);
-        state.setCurrentPlayerIndex(state.getNextActivePlayer(state.getCurrentPlayerIndex()));
+        // Set current player to the player AFTER the penalized nextPlayer
+        state.setCurrentPlayerIndex(state.getNextActivePlayer(nextPlayer));
     }
 
     private void handleSpecialCard(UnoCard chosenCard, int playerIndex,
