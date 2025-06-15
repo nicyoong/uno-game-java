@@ -38,14 +38,14 @@ $(BIN_DIR)/%.class: $(SRC_DIR)/%.java
 	@echo "Running command: javac -d $(BIN_DIR) $(SOURCES)"
 	@javac -d $(BIN_DIR) $(SOURCES)
 
-# Run the uno.game.Uno game
+# Run the Uno game
 run: $(CLASSES)
-	@echo "Running the uno.game.Uno game..."
+	@echo "Running the Uno game..."
 	@java -cp $(BIN_DIR) uno.UnoGameLauncher
 
-# Run the Extreme uno.game.Uno game
+# Run the Extreme Uno game
 run_extreme: $(CLASSES)
-	@echo "Running the Extreme uno.game.Uno game..."
+	@echo "Running the Extreme Uno game..."
 	@java -cp $(BIN_DIR) uno.ExtremeUnoLauncher
 
 # Clean target

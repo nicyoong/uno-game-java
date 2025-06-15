@@ -103,7 +103,7 @@ public class ExtremeUnoLauncher {
     private static void logGameStart(int players, String gameMode) {
         LOGGER.log(
                 Level.INFO,
-                "Starting Extreme Single Player uno.game.Uno ({0}) with {1} players…",
+                "Starting Extreme Single Player Uno ({0}) with {1} players…",
                 new Object[]{gameMode, players}
         );
     }
