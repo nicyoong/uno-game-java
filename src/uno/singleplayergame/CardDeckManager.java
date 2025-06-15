@@ -59,4 +59,12 @@ public class CardDeckManager {
         deck.addCard(card);
         deck.shuffle();
     }
+
+    public UnoCard getPreviousTopDiscardCard() {
+        int numCards = discardPile.getNumCards();
+        if (numCards < 2) {
+            return null;
+        }
+        return discardPile.getCard(numCards - 2);
+    }
 }

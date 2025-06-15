@@ -67,4 +67,8 @@ public class GameStateManager {
         }
         return nextPlayerIndex;
     }
+
+    public boolean isPlayerActive(int playerIndex) {
+        return !finishingOrder.contains(playerIndex);
+    }
 }

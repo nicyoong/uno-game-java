@@ -54,4 +54,10 @@ public class HumanPlayerController {
             }
         }
     }
+
+    public boolean promptChallenge() {
+        System.out.print("Do you want to challenge the Wild Draw Four? (yes/no): ");
+        String input = scanner.nextLine().trim().toLowerCase();
+        return input.startsWith("y");
+    }
 }

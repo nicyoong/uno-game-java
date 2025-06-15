@@ -1,8 +1,11 @@
 package uno.effects;
 
+import uno.cards.CollectionOfUnoCards;
 import uno.cards.UnoCard;
 import uno.game.SinglePlayerUno;
 import uno.singleplayergame.*;
+
+import java.util.Random;
 
 public class SingleCardEffectHandler {
     
@@ -61,13 +64,80 @@ public class SingleCardEffectHandler {
     }
 
     private void handleWildDrawFourCard(UnoCard playedCard, int playerIndex, SinglePlayerUno game) {
-        System.out.println("Player " + (playerIndex + 1) + " played Wild Draw Four. Next player must draw 4 cards.");
+        GameStateManager gameState = game.getGameState();
+        OutputRenderer renderer = game.getOutputRenderer();
+
+        // Save previous color before setting new color
+        UnoCard previousTop = game.getDeckManager().getPreviousTopDiscardCard();
+        int previousColor = (previousTop != null) ? previousTop.getColor() : -1;
+
+        // Let current player choose new color
         handleWildCard(playedCard, playerIndex, game);
-        int nextPlayer = game.getGameState().getNextActivePlayer(game.getGameState().getCurrentPlayerIndex());
-        game.drawCardsWithCreeperCheck(nextPlayer, 4);
-        game.getGameState().setCurrentPlayerIndex(
-                game.getGameState().getNextActivePlayer(game.getGameState().getCurrentPlayerIndex())
-        );
+
+        // Identify next player (challenger) and player after next
+        int nextPlayer = gameState.getNextActivePlayer(playerIndex);
+        int playerAfterNext = gameState.getNextActivePlayer(nextPlayer);
+
+        // Only proceed if next player is active
+        if (!gameState.isPlayerActive(nextPlayer)) {
+            gameState.setCurrentPlayerIndex(playerAfterNext);
+            return;
+        }
+
+        boolean isChallenging = false;
+        if (nextPlayer == gameState.getHumanPlayerIndex()) {
+            // Human challenge prompt
+            isChallenging = game.getHumanController().promptChallenge();
+        } else {
+            // AI has 50% chance to challenge
+            isChallenging = (new Random().nextInt(2) == 0);
+            if (isChallenging) {
+                renderer.showMessage("Player " + (nextPlayer + 1) + " challenges!");
+            }
+        }
+
+        // Resolve the challenge
+        resolveWildDrawFourChallenge(game, playerIndex, nextPlayer, previousColor, isChallenging);
+
+        // Skip next player's turn
+        gameState.setCurrentPlayerIndex(playerAfterNext);
+    }
+
+    private void resolveWildDrawFourChallenge(SinglePlayerUno game, int playerIndex,
+                                              int nextPlayer, int previousColor,
+                                              boolean isChallenging) {
+        GameStateManager gameState = game.getGameState();
+        OutputRenderer renderer = game.getOutputRenderer();
+
+        if (!isChallenging) {
+            // No challenge: next player draws 4
+            game.drawCardsWithCreeperCheck(nextPlayer, 4);
+            return;
+        }
+
+        // Check if current player had playable card
+        boolean hasPlayableCard = false;
+        CollectionOfUnoCards currentHand = game.getPlayerManager().getPlayerHand(playerIndex);
+        for (int i = 0; i < currentHand.getNumCards(); i++) {
+            UnoCard card = currentHand.getCard(i);
+            // Check for any card matching the previous color (excluding Wild cards)
+            if (card.getNumber() < 13 && card.getColor() == previousColor) {
+                hasPlayableCard = true;
+                break;
+            }
+        }
+
+        if (hasPlayableCard) {
+            // Challenge successful: current player draws 4
+            renderer.showMessage("Challenge successful! Player " + (playerIndex + 1) +
+                    " must draw 4 cards.");
+            game.drawCardsWithCreeperCheck(playerIndex, 4);
+        } else {
+            // Challenge failed: next player draws 6
+            renderer.showMessage("Challenge failed! Player " + (nextPlayer + 1) +
+                    " must draw 6 cards.");
+            game.drawCardsWithCreeperCheck(nextPlayer, 6);
+        }
     }
 
     private void handleSegFaultCard(UnoCard playedCard, int playerIndex, String gameMode, SinglePlayerUno game) {
