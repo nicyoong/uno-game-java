@@ -1,5 +1,6 @@
 package uno.effects;
 
+import uno.cards.CollectionOfUnoCards;
 import uno.game.Uno;
 import uno.cards.UnoCard;
 import uno.multiplayergame.OutputRenderer;
@@ -61,15 +62,58 @@ public class CardEffectHandler {
     }
 
     private void handleWildDrawFour(UnoCard chosenCard, int playerIndex, Uno game) {
+        GameStateManager state = game.getGameState();
+        int previousColor = game.getDeckManager().getTopDiscardCard().getColor();
         outputRenderer.showMessage("Wild Draw Four card played! Choosing a new color...");
         handleWild(chosenCard, playerIndex, game);
-        outputRenderer.showMessage("Next player draws four cards and is skipped!");
-
-        GameStateManager state = game.getGameState();
         int nextPlayer = state.getNextActivePlayer(state.getCurrentPlayerIndex());
-        game.executeDraw(nextPlayer, 4);
-        // Set current player to the player AFTER the penalized nextPlayer
-        state.setCurrentPlayerIndex(state.getNextActivePlayer(nextPlayer));
+        outputRenderer.showMessage("Player " + (nextPlayer + 1) + ", you can challenge!");
+        handleWildDrawFourChallenge(playerIndex, nextPlayer, previousColor, game);
+    }
+
+    private void handleWildDrawFourChallenge(int playerIndex, int nextPlayer,
+                                             int previousColor, Uno game) {
+        GameStateManager state = game.getGameState();
+
+        outputRenderer.showMessage("Player " + (nextPlayer + 1) + ", you can challenge!");
+        boolean challenge = game.getHumanController().promptChallenge(nextPlayer);
+
+        if (challenge) {
+            CollectionOfUnoCards challengerHand = game.getPlayerManager().getPlayerHand(playerIndex);
+            boolean hasValidCard = false;
+
+            // Check if player had playable non-Wild cards
+            for (int i = 0; i < challengerHand.getNumCards(); i++) {
+                UnoCard card = challengerHand.getCard(i);
+                if (card.getColor() == previousColor && card.getNumber() < 13) {
+                    hasValidCard = true;
+                    break;
+                }
+            }
+
+            if (hasValidCard) {
+                // Challenge successful
+                outputRenderer.showMessage("Challenge successful! Player " + (playerIndex + 1) +
+                        " had a playable card and must draw 6 cards!");
+                game.executeDraw(playerIndex, 6);
+                // Challenger plays next
+                state.setCurrentPlayerIndex(nextPlayer);
+            } else {
+                // Challenge failed
+                outputRenderer.showMessage("Challenge failed! Player " + (nextPlayer + 1) +
+                        " must draw 6 cards and is skipped!");
+                game.executeDraw(nextPlayer, 6);
+                // Skip challenger
+                state.setCurrentPlayerIndex(state.getNextActivePlayer(nextPlayer));
+            }
+        } else {
+            // No challenge
+            outputRenderer.showMessage("No challenge. Player " + (nextPlayer + 1) +
+                    " draws four cards and is skipped!");
+            game.executeDraw(nextPlayer, 4);
+            // Skip next player
+            state.setCurrentPlayerIndex(state.getNextActivePlayer(nextPlayer));
+        }
     }
 
     private void handleSpecialCard(UnoCard chosenCard, int playerIndex,
