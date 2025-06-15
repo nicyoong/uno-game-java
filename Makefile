@@ -14,7 +14,12 @@ SOURCES := \
     $(SRC_DIR)/uno/singleplayergame/HumanPlayerController.java \
     $(SRC_DIR)/uno/singleplayergame/OutputRenderer.java \
     $(SRC_DIR)/uno/singleplayergame/GameFlowController.java \
-    $(SRC_DIR)/uno/game/Uno.java \
+	$(SRC_DIR)/uno/game/MultiplayerGame.java \
+    $(SRC_DIR)/uno/multiplayergame/PlayerManager.java \
+    $(SRC_DIR)/uno/multiplayergame/OutputRenderer.java \
+    $(SRC_DIR)/uno/multiplayergame/HumanPlayerController.java \
+    $(SRC_DIR)/uno/multiplayergame/GameStateManager.java \
+    $(SRC_DIR)/uno/multiplayergame/CardDeckManager.java \
     $(SRC_DIR)/uno/cards/UnoCard.java \
     $(SRC_DIR)/uno/effects/CardEffectHandler.java \
     $(SRC_DIR)/uno/effects/SingleCardEffectHandler.java \
