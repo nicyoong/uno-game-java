@@ -2,11 +2,31 @@ package uno;
 
 import uno.game.ExtremeUno;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.logging.*;
 
 public class ExtremeUnoLauncher {
     private static final Logger LOGGER = Logger.getLogger(ExtremeUnoLauncher.class.getName());
+
+    static {
+        // Configure SimpleFormatter to only output the message
+        System.setProperty(
+                "java.util.logging.SimpleFormatter.format",
+                "%5$s%n"
+        );
+        // Send ConsoleHandler output to stdout
+        System.setProperty("java.util.logging.ConsoleHandler.target", "SYSTEM_OUT");
+
+        // Configure root logger: remove default handlers and add our ConsoleHandler
+        Logger root = Logger.getLogger(".");
+        for (Handler h : root.getHandlers()) {
+            root.removeHandler(h);
+        }
+        ConsoleHandler handler = new ConsoleHandler();
+        handler.setLevel(Level.ALL);
+        handler.setFormatter(new SimpleFormatter());
+        root.addHandler(handler);
+        root.setLevel(Level.ALL);
+    }
 
     public static void main(String[] args) {
         try (Scanner scanner = new Scanner(System.in)) {
