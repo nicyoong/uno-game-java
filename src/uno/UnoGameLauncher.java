@@ -9,6 +9,10 @@ public class UnoGameLauncher {
     private static final Logger LOGGER = Logger.getLogger(UnoGameLauncher.class.getName());
 
     static {
+        System.setProperty(
+                "java.util.logging.SimpleFormatter.format",
+                "%5$s%n"  // %5$s is the message, %n is newline
+        );
         System.setProperty("java.util.logging.ConsoleHandler.target", "SYSTEM_OUT");
         Logger root = Logger.getLogger("");
         for (Handler handler : root.getHandlers()) {
