@@ -60,8 +60,8 @@ public class UnoGameLauncher {
                     "Starting Multiplayer Uno with {0} players in {1} mode...",
                     new Object[]{numPlayers, gameMode}
             );
-            Uno multiplayerGame = new Uno(numPlayers, gameMode);
-            multiplayerGame.playGame(gameMode);
+            Uno Uno = new Uno(numPlayers, gameMode);
+            Uno.playGame(gameMode);
         }
 
         scanner.close();

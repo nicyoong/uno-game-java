@@ -2,18 +2,22 @@ package uno.effects;
 
 import uno.game.Uno;
 import uno.cards.UnoCard;
+import uno.multiplayergame.OutputRenderer;
+import uno.multiplayergame.GameStateManager;
 
 public class CardEffectHandler {
-    
-    public void handleCardEffect(UnoCard chosenCard, int playerIndex, String gameMode, Uno game) {
+    private final OutputRenderer outputRenderer = new OutputRenderer();
+
+    public void handleCardEffect(UnoCard chosenCard, int playerIndex,
+                                 String gameMode, Uno game) {
         int cardNumber = chosenCard.getNumber();
-        
+
         if (cardNumber == 10) { // Skip
             handleSkip(game);
         } else if (cardNumber == 11) { // Reverse
             handleReverse(game);
         } else if (cardNumber == 12) { // Draw Two
-            handleDrawTwo(chosenCard, playerIndex, game);
+            handleDrawTwo(game);
         } else if (cardNumber == 13) { // Wild
             handleWild(chosenCard, playerIndex, game);
         } else if (cardNumber == 14) { // Wild Draw Four
@@ -22,120 +26,134 @@ public class CardEffectHandler {
             handleSpecialCard(chosenCard, playerIndex, gameMode, game);
         }
     }
-    
+
     private void handleSkip(Uno game) {
-        System.out.println("Next player is skipped!");
-        game.checkForWinner(game.getCurrentPlayerIndex());
-        game.setCurrentPlayerIndex(game.getNextActivePlayer(game.getCurrentPlayerIndex()));
+        outputRenderer.showMessage("Next player is skipped!");
+        GameStateManager state = game.getGameState();
+        state.setCurrentPlayerIndex(state.getNextActivePlayer(state.getCurrentPlayerIndex()));
     }
-    
+
     private void handleReverse(Uno game) {
-        System.out.println("Turn order reversed!");
-        game.setClockwise(!game.isClockwise()); // Reverse the direction of play
+        outputRenderer.showMessage("Turn order reversed!");
+        GameStateManager state = game.getGameState();
+        state.setClockwise(!state.isClockwise());
     }
-    
-    private void handleDrawTwo(UnoCard chosenCard, int playerIndex, Uno game) {
-        System.out.println("Next player draws two uno.cards!");
-        game.checkForWinner(game.getCurrentPlayerIndex());
-        int nextPlayer = game.getNextActivePlayer(game.getCurrentPlayerIndex());
+
+    private void handleDrawTwo(Uno game) {
+        outputRenderer.showMessage("Next player draws two cards!");
+        GameStateManager state = game.getGameState();
+        int nextPlayer = state.getNextActivePlayer(state.getCurrentPlayerIndex());
         game.executeDraw(nextPlayer, 2);
-        game.setCurrentPlayerIndex(game.getNextActivePlayer(game.getCurrentPlayerIndex()));
+        state.setCurrentPlayerIndex(state.getNextActivePlayer(state.getCurrentPlayerIndex()));
     }
-    
+
     private void handleWild(UnoCard chosenCard, int playerIndex, Uno game) {
-        System.out.println("Wild card played! Choosing a new color...");
-        chosenCard.setColor(game.promptColorSelection(playerIndex));
+        outputRenderer.showMessage("Wild card played! Choosing a new color...");
+        int color = game.getHumanController().promptColorSelection(playerIndex);
+        chosenCard.setColor(color);
+        outputRenderer.showMessage("Color set to: " + UnoCard.getColorName(color));
     }
-    
+
     private void handleWildDrawFour(UnoCard chosenCard, int playerIndex, Uno game) {
-        System.out.println("Wild Draw Four card played! Choosing a new color...");
-        chosenCard.setColor(game.promptColorSelection(playerIndex));
-        System.out.println("Next player draws four uno.cards!");
-        game.checkForWinner(game.getCurrentPlayerIndex());
-        int nextPlayer = game.getNextActivePlayer(game.getCurrentPlayerIndex());
+        outputRenderer.showMessage("Wild Draw Four card played! Choosing a new color...");
+        handleWild(chosenCard, playerIndex, game);
+        outputRenderer.showMessage("Next player draws four cards!");
+
+        GameStateManager state = game.getGameState();
+        int nextPlayer = state.getNextActivePlayer(state.getCurrentPlayerIndex());
         game.executeDraw(nextPlayer, 4);
-        game.setCurrentPlayerIndex(game.getNextActivePlayer(game.getCurrentPlayerIndex()));
+        state.setCurrentPlayerIndex(state.getNextActivePlayer(state.getCurrentPlayerIndex()));
     }
-    
-    private void handleSpecialCard(UnoCard chosenCard, int playerIndex, String gameMode, Uno game) {
+
+    private void handleSpecialCard(UnoCard chosenCard, int playerIndex,
+                                   String gameMode, Uno game) {
+        GameStateManager state = game.getGameState();
+
         if ("42".equals(gameMode)) {
-            System.out.println("SegFault card played! Choosing a new color...");
-            chosenCard.setColor(game.promptColorSelection(playerIndex));
-            int nextPlayer = game.getNextActivePlayer(game.getCurrentPlayerIndex());
-            System.out.println("Player " + (nextPlayer + 1) + " is skipped!");
-            game.checkForWinner(nextPlayer);
-            game.setCurrentPlayerIndex(game.getNextActivePlayer(game.getCurrentPlayerIndex()));
-            int followingPlayer = game.getNextActivePlayer(game.getCurrentPlayerIndex());
-            System.out.println("Player " + (followingPlayer + 1) + " draws 2 uno.cards due to the SegFault card!");
+            outputRenderer.showMessage("SegFault card played! Choosing a new color...");
+            handleWild(chosenCard, playerIndex, game);
+
+            int nextPlayer = state.getNextActivePlayer(state.getCurrentPlayerIndex());
+            outputRenderer.showMessage("Player " + (nextPlayer + 1) + " is skipped!");
+            state.setCurrentPlayerIndex(state.getNextActivePlayer(state.getCurrentPlayerIndex()));
+
+            int followingPlayer = state.getNextActivePlayer(state.getCurrentPlayerIndex());
+            outputRenderer.showMessage("Player " + (followingPlayer + 1) +
+                    " draws 2 cards due to the SegFault card!");
             game.executeDraw(followingPlayer, 2);
         } else {
-            System.out.println("Wild card played! Choosing a new color...");
-            chosenCard.setColor(game.promptColorSelection(playerIndex));
+            handleWild(chosenCard, playerIndex, game);
         }
     }
-    
 
-    public void handleStartingCardEffect(UnoCard startingCard, int playerIndex, String gameMode, Uno game) {
+    public void handleStartingCardEffect(UnoCard startingCard, int playerIndex,
+                                         String gameMode, Uno game) {
+        GameStateManager state = game.getGameState();
+
         switch (startingCard.getNumber()) {
             case 13: // Wild
-                System.out.println("Starting card is a Wild. Player " + (playerIndex + 1) + " can choose the starting color.");
-                int chosenColor = game.promptColorSelection(playerIndex); // Prompt player for a color
-                startingCard.setColor(chosenColor); // Set chosen color
+                outputRenderer.showMessage("Starting card is a Wild. Player " +
+                        (playerIndex + 1) + " can choose the starting color.");
+                handleWild(startingCard, playerIndex, game);
                 break;
 
             case 14: // Wild Draw Four
-                System.out.println("Starting card is a Wild Draw Four. Returning it to the deck and drawing a new starting card.");
-                game.deck.addCard(startingCard); // Return Wild Draw Four to the deck
-                game.deck.shuffle(); // Reshuffle the deck
-                startingCard = game.deck.removeFromTop(); // Draw a new starting card
-                handleStartingCardEffect(startingCard, playerIndex, gameMode, game); // Recursively handle the new starting card
+                outputRenderer.showMessage("Starting card is a Wild Draw Four. " +
+                        "Returning it to the deck and drawing a new starting card.");
+                game.getDeckManager().returnCardToDeckAndShuffle(startingCard);
+                UnoCard newCard = game.getDeckManager().drawCard();
+                outputRenderer.showMessage("New starting card: " + newCard);
+                handleStartingCardEffect(newCard, playerIndex, gameMode, game);
                 break;
 
             case 15: // SegFault Card
                 if ("42".equals(gameMode)) {
-                    // SegFault logic for game mode "42"
-                    System.out.println("Starting card is a SegFault. Player " + (playerIndex + 1) + " can choose the starting color, but will not be allowed to play.");
-                    int chosenColor2 = game.promptColorSelection(playerIndex); // Prompt player for a color
-                    startingCard.setColor(chosenColor2); // Set chosen color
-                    System.out.println("Player " + (playerIndex + 1) + " is skipped!");
-                    game.setCurrentPlayerIndex(game.getNextActivePlayer(game.getCurrentPlayerIndex()));
-                    int nextPlayer = game.getNextActivePlayer(game.getCurrentPlayerIndex());
-                    System.out.println("Player " + (nextPlayer + 1) + " draws 2 uno.cards due to the SegFault card!");
+                    outputRenderer.showMessage("Starting card is a SegFault. Player " +
+                            (playerIndex + 1) + " can choose the starting color, " +
+                            "but will not be allowed to play.");
+                    handleWild(startingCard, playerIndex, game);
+                    outputRenderer.showMessage("Player " + (playerIndex + 1) + " is skipped!");
+                    state.setCurrentPlayerIndex(state.getNextPlayer(playerIndex));
+
+                    int nextPlayer = state.getNextPlayer(playerIndex);
+                    outputRenderer.showMessage("Player " + (nextPlayer + 1) +
+                            " draws 2 cards due to the SegFault card!");
                     game.executeDraw(nextPlayer, 2);
                 } else if ("Minecraft".equals(gameMode)) {
-                    System.out.println("Starting card is a Creeper card, we treat this as Wild.");
-                    System.out.println("Player " + (playerIndex + 1) + " can choose the starting color.");
-                    chosenColor = game.promptColorSelection(playerIndex); // Prompt player for a color
-                    startingCard.setColor(chosenColor); // Set chosen color
+                    outputRenderer.showMessage("Starting card is a Creeper card, " +
+                            "we treat this as Wild.");
+                    outputRenderer.showMessage("Player " + (playerIndex + 1) +
+                            " can choose the starting color.");
+                    handleWild(startingCard, playerIndex, game);
                 } else {
-                    // Logic for other game modes if needed
-                    System.out.println("Starting card is a Special card, we treat this as Wild.");
-                    System.out.println("Player " + (playerIndex + 1) + " can choose the starting color.");
-                    chosenColor = game.promptColorSelection(playerIndex); // Prompt player for a color
-                    startingCard.setColor(chosenColor); // Set chosen color
+                    outputRenderer.showMessage("Starting card is a Special card, " +
+                            "we treat this as Wild.");
+                    outputRenderer.showMessage("Player " + (playerIndex + 1) +
+                            " can choose the starting color.");
+                    handleWild(startingCard, playerIndex, game);
                 }
                 break;
 
             case 10: // Skip
-                System.out.println("Starting card is a Skip. Player " + (playerIndex + 1) + "'s turn is skipped.");
-                game.setCurrentPlayerIndex(game.getNextActivePlayer(game.getCurrentPlayerIndex())); // Skip current player
+                outputRenderer.showMessage("Starting card is a Skip. Player " +
+                        (playerIndex + 1) + "'s turn is skipped.");
+                state.setCurrentPlayerIndex(state.getNextPlayer(playerIndex));
                 break;
 
             case 11: // Reverse
-                System.out.println("Starting card is a Reverse. Turn order is reversed.");
-                game.setClockwise(!game.isClockwise()); // Reverse the direction
+                outputRenderer.showMessage("Starting card is a Reverse. Turn order is reversed.");
+                state.setClockwise(!state.isClockwise());
                 break;
 
             case 12: // Draw Two
-                System.out.println("Starting card is a Draw Two. Player " + (playerIndex + 1) + " must draw two uno.cards.");
+                outputRenderer.showMessage("Starting card is a Draw Two. Player " +
+                        (playerIndex + 1) + " must draw two cards.");
                 game.executeDraw(playerIndex, 2);
-                game.setCurrentPlayerIndex(game.getNextActivePlayer(game.getCurrentPlayerIndex())); // Move to the next player
+                state.setCurrentPlayerIndex(state.getNextPlayer(playerIndex));
                 break;
 
             default:
-                break; // No action needed for regular uno.cards
+                break; // No action needed for regular cards
         }
     }
-
-    // Additional methods can be added here for different game modes if needed
 }
