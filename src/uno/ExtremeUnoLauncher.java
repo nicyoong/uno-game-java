@@ -1,79 +1,115 @@
 package uno;
 
 import uno.game.ExtremeUno;
-
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ExtremeUnoLauncher {
-    public ExtremeUnoLauncher() {
-    }
+    private static final Logger LOGGER = Logger.getLogger(ExtremeUnoLauncher.class.getName());
 
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter the number of players between 2 and 500: ");
+        try (Scanner scanner = new Scanner(System.in)) {
+            int numberOfPlayers = promptNumberOfPlayers(scanner);
+            int mode = promptMainMenuChoice(scanner);
 
-        int numberOfPlayers;
-        // Input validation for number of players
-        for (numberOfPlayers = scanner.nextInt(); numberOfPlayers < 2 || numberOfPlayers > 500; numberOfPlayers = scanner.nextInt()) {
-            System.out.print("Invalid number of players. Please enter a number between 2 and 500: ");
-        }
-
-        System.out.println("Select game mode:");
-        System.out.println("1: Single Player (with AI)");
-        System.out.println("2: Multiplayer (human players)");
-
-        while (true) {
-            System.out.print("Enter your choice (1 or 2): ");
-            if (scanner.hasNextInt()) {
-                int gameModeChoice = scanner.nextInt();
-                if (gameModeChoice == 1) {
-                    System.out.println("Select game mode:");
-                    System.out.println("1: Normal");
-                    System.out.println("2: 42");
-                    System.out.println("3: Minecraft");
-
-                    int modeChoice = 0;
-                    while (true) {
-                        System.out.print("Enter your game mode choice (1, 2, or 3): ");
-                        if (scanner.hasNextInt()) {
-                            modeChoice = scanner.nextInt();
-                            if (modeChoice == 1) {
-                                String gameMode = "Normal";
-                                System.out.println("Starting Extreme Single Player uno.game.Uno (Normal) with " + numberOfPlayers + " players...");
-                                ExtremeUno singlePlayerGame = new ExtremeUno(numberOfPlayers, gameMode);
-                                singlePlayerGame.playGame();
-                                break; // Exit after starting the game
-                            } else if (modeChoice == 2) {
-                                System.out.println("42 is coming soon. Thank you for your patience.");
-                                // Optional: You can return to the game mode selection or exit here.
-                            } else if (modeChoice == 3) {
-                                String gameMode = "Minecraft";
-                                System.out.println("Starting Extreme Single Player uno.game.Uno (Minecraft) with " + numberOfPlayers + " players...");
-                                ExtremeUno singlePlayerGame = new ExtremeUno(numberOfPlayers, gameMode);
-                                singlePlayerGame.playGame();
-                                break; // Exit after starting the game
-                            } else {
-                                System.out.println("Invalid choice. Please select 1, 2, or 3.");
-                            }
-                        } else {
-                            System.out.println("Invalid input. Please enter a number (1, 2, or 3).");
-                            scanner.next(); // Consume the invalid input
-                        }
-                    }
-                    break; // Exit the game mode selection loop
-                } else if (gameModeChoice == 2) {
-                    System.out.println("Multiplayer mode is not available for Extreme uno.game.Uno yet.");
-                    System.out.println("Extreme multiplayer is coming soon. Thank you for your patience.");
-                    break; // Exit gracefully after notifying the user
-                } else {
-                    System.out.println("Invalid choice. Please select 1 for Single Player or 2 for Multiplayer.");
-                }
+            if (mode == 1) {
+                handleSinglePlayer(numberOfPlayers, scanner);
             } else {
-                System.out.println("Invalid input. Please enter a number (1 or 2).");
-                scanner.next(); // Consume the invalid input
+                handleMultiplayer();
             }
         }
+    }
 
-        scanner.close(); // Close the scanner before exiting
+    private static int promptNumberOfPlayers(Scanner scanner) {
+        LOGGER.info("Enter the number of players between 2 and 500:");
+        int players;
+        while (true) {
+            if (scanner.hasNextInt()) {
+                players = scanner.nextInt();
+                if (players >= 2 && players <= 500) {
+                    return players;
+                }
+            } else {
+                scanner.next(); // consume invalid token
+            }
+            LOGGER.warning("Invalid number of players. Please enter a number between 2 and 500:");
+        }
+    }
+
+    private static int promptMainMenuChoice(Scanner scanner) {
+        LOGGER.info("Select game mode:");
+        LOGGER.info("1: Single Player (with AI)");
+        LOGGER.info("2: Multiplayer (human players)");
+
+        while (true) {
+            LOGGER.info("Enter your choice (1 or 2):");
+            if (scanner.hasNextInt()) {
+                int choice = scanner.nextInt();
+                if (choice == 1 || choice == 2) {
+                    return choice;
+                }
+            } else {
+                scanner.next();
+            }
+            LOGGER.warning("Invalid input. Please select 1 for Single Player or 2 for Multiplayer.");
+        }
+    }
+
+    private static void handleSinglePlayer(int numberOfPlayers, Scanner scanner) {
+        int singleMode = promptSinglePlayerMode(scanner);
+        String gameModeName = modeName(singleMode);
+
+        if (singleMode == 2) {
+            LOGGER.info("42 is coming soon. Thank you for your patience.");
+            return;
+        }
+
+        logGameStart(numberOfPlayers, gameModeName);
+        new ExtremeUno(numberOfPlayers, gameModeName).playGame();
+    }
+
+    private static int promptSinglePlayerMode(Scanner scanner) {
+        LOGGER.info("Select single-player mode:");
+        LOGGER.info("1: Normal");
+        LOGGER.info("2: 42");
+        LOGGER.info("3: Minecraft");
+
+        while (true) {
+            LOGGER.info("Enter your game mode choice (1, 2, or 3):");
+            if (scanner.hasNextInt()) {
+                int choice = scanner.nextInt();
+                if (choice >= 1 && choice <= 3) {
+                    return choice;
+                }
+            } else {
+                scanner.next();
+            }
+            LOGGER.warning("Invalid choice. Please select 1, 2, or 3.");
+        }
+    }
+
+    private static String modeName(int modeChoice) {
+        switch (modeChoice) {
+            case 1:
+                return "Normal";
+            case 3:
+                return "Minecraft";
+            default:
+                return "Unknown";
+        }
+    }
+
+    private static void logGameStart(int players, String gameMode) {
+        LOGGER.log(
+                Level.INFO,
+                "Starting Extreme Single Player uno.game.Uno ({0}) with {1} players…",
+                new Object[]{gameMode, players}
+        );
+    }
+
+    private static void handleMultiplayer() {
+        LOGGER.info("Multiplayer mode is not available for Extreme Uno yet.");
+        LOGGER.info("Extreme multiplayer is coming soon. Thank you for your patience.");
     }
 }
