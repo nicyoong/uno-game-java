@@ -1,3 +1,7 @@
+package uno.game;
+
+import uno.cards.UnoCard;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -48,7 +52,7 @@ public class ExtremeUno {
             hands.add(new ExtremeUnoCollection());
         }
 
-        // Deal cards to each player.
+        // Deal uno.cards to each player.
         for (int i = 0; i < NUMCARDSHAND; i++) {
             for (int j = 0; j < numPlayers; j++) {
                 hands.get(j).addCard(deck.removeFromTop());
@@ -97,12 +101,12 @@ public class ExtremeUno {
                 isClockwise = !isClockwise; // Reverse the direction
                 break;
             case 12: // Draw Two
-                System.out.println("Starting card is a Draw Two. Player 1 must draw two cards.");
+                System.out.println("Starting card is a Draw Two. Player 1 must draw two uno.cards.");
                 executeDraw(currentPlayerIndex, 2);
                 currentPlayerIndex = getNextPlayer(currentPlayerIndex); // Move to the next player
                 break;
             default:
-                break; // No action needed for regular cards
+                break; // No action needed for regular uno.cards
         }
     }
 
@@ -180,9 +184,9 @@ public class ExtremeUno {
         // Print the last player
         if (lastPlayerIndex != -1) {
             if (lastPlayerIndex == humanPlayerIndex) {
-                System.out.println((finishingOrder.size() + 1) + ": " + playerName + " (still has " + lastPlayerCardCount + " cards)");
+                System.out.println((finishingOrder.size() + 1) + ": " + playerName + " (still has " + lastPlayerCardCount + " uno.cards)");
             } else {
-                System.out.println((finishingOrder.size() + 1) + ": Player " + (lastPlayerIndex + 1) + " (still has " + lastPlayerCardCount + " cards)");
+                System.out.println((finishingOrder.size() + 1) + ": Player " + (lastPlayerIndex + 1) + " (still has " + lastPlayerCardCount + " uno.cards)");
             }
         }
 
@@ -243,7 +247,7 @@ public class ExtremeUno {
 
     private void executeDraw(int playerIndex, int numCards) {
         if (deck.getNumCards() < numCards) {
-            System.out.println("Not enough cards in the deck, shuffling discard pile into deck.");
+            System.out.println("Not enough uno.cards in the deck, shuffling discard pile into deck.");
             shuffleDiscardPileIntoDeck();
         }
         
@@ -262,13 +266,13 @@ public class ExtremeUno {
     
                 // Check if the drawn card is a Creeper card
                 if (drawnCard.isCreeper()) {
-                    System.out.println("Player " + (playerIndex + 1) + " has drawn a Creeper card and must draw 3 more cards.");
+                    System.out.println("Player " + (playerIndex + 1) + " has drawn a Creeper card and must draw 3 more uno.cards.");
     
-                    // Draw 3 additional cards as per Creeper rule
+                    // Draw 3 additional uno.cards as per Creeper rule
                     for (int j = 0; j < 3; j++) {
                         // Reshuffle if deck is empty before each additional draw
                         if (deck.getNumCards() == 0) {
-                            System.out.println("Deck is empty while drawing additional cards for Creeper.");
+                            System.out.println("Deck is empty while drawing additional uno.cards for Creeper.");
                             shuffleDiscardPileIntoDeck();
                         }
     
@@ -300,10 +304,10 @@ public class ExtremeUno {
                     
                     // Check if the chosen card is a Wild Draw Four
                     if (chosenCard.getNumber() == 14) { // Wild Draw Four
-                        // Check if there are other playable cards
+                        // Check if there are other playable uno.cards
                         if (playerHand.canPlayExcludingWildDrawFour(topCard)) {
-                            // If there are other playable cards, inform the player and prompt again
-                            System.out.println("You have other playable cards. You cannot play a Wild Draw Four now.");
+                            // If there are other playable uno.cards, inform the player and prompt again
+                            System.out.println("You have other playable uno.cards. You cannot play a Wild Draw Four now.");
                             continue; // Go back to choosing a card again
                         }
                     }
@@ -339,7 +343,7 @@ public class ExtremeUno {
         for (ExtremeUnoCollection hand : hands) {
             totalCardsInHands += hand.getNumCards();
         }
-        System.out.println("Total cards in hands: " + totalCardsInHands);
+        System.out.println("Total uno.cards in hands: " + totalCardsInHands);
     
         System.out.println("Turn number: " + turnNumber);
         System.out.println("Remaining players: " + (numPlayers - finishingOrder.size()));
@@ -352,7 +356,7 @@ public class ExtremeUno {
         
         if (player == humanPlayerIndex) { // Human player
             if (!canPlayAnyCard(playerHand, topCard)) {
-                System.out.println("No playable cards. Drawing a card...");
+                System.out.println("No playable uno.cards. Drawing a card...");
                 playerHand.addCard(deck.removeFromTop());
                 if (!canPlayAnyCard(playerHand, topCard)) {
                     System.out.println("You still cannot play. Turn skipped.");
@@ -385,7 +389,7 @@ public class ExtremeUno {
             boolean played = false;
             List<Integer> playableCardIndices = new ArrayList<>();
     
-            // Check for playable cards in the AI's hand
+            // Check for playable uno.cards in the AI's hand
             for (int i = 0; i < playerHand.getNumCards(); i++) {
                 UnoCard aiPlayedCard = playerHand.getCard(i);
                 if (canPlay(aiPlayedCard, topCard)) {
@@ -393,7 +397,7 @@ public class ExtremeUno {
                 }
             }
     
-            // If there are playable cards, choose one randomly
+            // If there are playable uno.cards, choose one randomly
             if (!playableCardIndices.isEmpty()) {
                 Random random = new Random();
                 int randomIndex = playableCardIndices.get(random.nextInt(playableCardIndices.size()));
@@ -470,7 +474,7 @@ public class ExtremeUno {
                 isClockwise = !isClockwise;
                 break;
             case 12: // Draw Two
-                System.out.println("Player " + (playerIndex + 1) + " played Draw Two. Next player must draw 2 cards.");
+                System.out.println("Player " + (playerIndex + 1) + " played Draw Two. Next player must draw 2 uno.cards.");
                 executeDraw(getNextActivePlayer(currentPlayerIndex), 2);
                 currentPlayerIndex = getNextActivePlayer(currentPlayerIndex);
                 break;
@@ -487,7 +491,7 @@ public class ExtremeUno {
                 }
                 break;
             case 14: // Wild Draw Four
-                System.out.println("Player " + (playerIndex + 1) + " played Wild Draw Four. Next player must draw 4 cards.");
+                System.out.println("Player " + (playerIndex + 1) + " played Wild Draw Four. Next player must draw 4 uno.cards.");
                 executeDraw(getNextActivePlayer(currentPlayerIndex), 4);
                 if (playerIndex == humanPlayerIndex) {
                     // Human player chooses color
@@ -522,22 +526,22 @@ public class ExtremeUno {
         System.out.println("Shuffling the discard pile back into the deck.");
     
         if (discardPile.getNumCards() == 0) {
-            System.out.println("Discard pile is empty. No cards to shuffle.");
+            System.out.println("Discard pile is empty. No uno.cards to shuffle.");
             return; // Exit if there's nothing to shuffle
         }
     
         UnoCard topCard = discardPile.getTopCard(); // Get the top card to keep it
-        ExtremeUnoCollection newDeck = new ExtremeUnoCollection(); // New deck for shuffled cards
+        ExtremeUnoCollection newDeck = new ExtremeUnoCollection(); // New deck for shuffled uno.cards
     
-        // Move cards from discard pile except the top one
+        // Move uno.cards from discard pile except the top one
         while (discardPile.getNumCards() > 1) { // Continue until only the top card remains
-            newDeck.addCard(discardPile.remove(0)); // Remove from index 0 to get cards correctly
+            newDeck.addCard(discardPile.remove(0)); // Remove from index 0 to get uno.cards correctly
         }
     
         // Shuffle the new deck
         newDeck.shuffle();
     
-        // Add shuffled cards back to the main deck
+        // Add shuffled uno.cards back to the main deck
         while (newDeck.getNumCards() > 0) {
             deck.addCard(newDeck.removeFromTop()); // Correctly remove from newDeck and add to the main deck
         }

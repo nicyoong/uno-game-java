@@ -1,3 +1,7 @@
+package uno.model;
+
+import uno.cards.UnoCard;
+
 public class RecentAction {
     private final int playerId;       // ID of the player who made the move
     private final String actionType; // The type of action (e.g., "Played", "Drew", "Skipped")
@@ -22,7 +26,7 @@ public class RecentAction {
         return card;
     }
 
-    // A specific method to convert RecentAction to string for turn memory display
+    // A specific method to convert uno.model.RecentAction to string for turn memory display
     public String toTurnMemoryString() {
         String cardString = (card != null) ? card.toString() : "None";
         return "Player " + (playerId + 1) + " " + actionType + " " + cardString;

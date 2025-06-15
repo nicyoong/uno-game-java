@@ -1,3 +1,8 @@
+package uno;
+
+import uno.game.SinglePlayerUno;
+import uno.game.Uno;
+
 import java.util.Scanner;
 
 public class UnoGameLauncher {
@@ -91,14 +96,14 @@ public class UnoGameLauncher {
                     System.out.println("Invalid input. Please enter 1 for Easy or 2 for Realistic.");
                 }
             }
-            System.out.println("Starting Single Player Uno with " + 
+            System.out.println("Starting Single Player uno.game.Uno with " +
                                 numPlayers + " players in " + 
                                 gameMode + " mode and difficulty " + 
                                 difficulty + "...");
             SinglePlayerUno singlePlayerGame = new SinglePlayerUno(numPlayers, gameMode);
             singlePlayerGame.playGame(gameMode, difficulty);
         } else {
-            System.out.println("Starting Multiplayer Uno with " + numPlayers + " players in " + gameMode + " mode...");
+            System.out.println("Starting Multiplayer uno.game.Uno with " + numPlayers + " players in " + gameMode + " mode...");
             Uno multiplayerGame = new Uno(numPlayers, gameMode);
             multiplayerGame.playGame(gameMode);
         }

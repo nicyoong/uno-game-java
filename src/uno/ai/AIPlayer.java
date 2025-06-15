@@ -1,3 +1,11 @@
+package uno.ai;
+
+import uno.model.RecentAction;
+import uno.effects.SingleCardEffectHandler;
+import uno.game.SinglePlayerUno;
+import uno.cards.CollectionOfUnoCards;
+import uno.cards.UnoCard;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -13,14 +21,14 @@ public class AIPlayer {
         this.singleCardEffectHandler = new SingleCardEffectHandler();
     }
 
-    public void easyAITurn(int player, CollectionOfUnoCards playerHand, 
-                        UnoCard topCard, CollectionOfUnoCards discardPile, 
-                        String gameMode, LinkedList<RecentAction> turnMemory, int memorySpan) {
+    public void easyAITurn(int player, CollectionOfUnoCards playerHand,
+                           UnoCard topCard, CollectionOfUnoCards discardPile,
+                           String gameMode, LinkedList<RecentAction> turnMemory, int memorySpan) {
         // Attempt to play a card first
         boolean played = false;
         List<Integer> playableCardIndices = new ArrayList<>();
 
-        // Check for playable cards in the AI's hand
+        // Check for playable uno.cards in the AI's hand
         for (int i = 0; i < playerHand.getNumCards(); i++) {
             UnoCard aiPlayedCard = playerHand.getCard(i);
             if (canPlay(aiPlayedCard, topCard)) {
@@ -28,7 +36,7 @@ public class AIPlayer {
             }
         }
 
-        // If there are playable cards, choose one randomly
+        // If there are playable uno.cards, choose one randomly
         if (!playableCardIndices.isEmpty()) {
             Random random = new Random();
             int randomIndex = playableCardIndices.get(random.nextInt(playableCardIndices.size()));
@@ -53,7 +61,7 @@ public class AIPlayer {
                 }
             }
 
-            // Check if the player has no cards left, declare win if there are no cards
+            // Check if the player has no uno.cards left, declare win if there are no uno.cards
             game.checkForWinner(player);
             
             singleCardEffectHandler.handleCardEffect(aiPlayedCard, player, gameMode, game);
@@ -64,15 +72,15 @@ public class AIPlayer {
         }
     }
 
-    public void realisticAITurn(int player, CollectionOfUnoCards playerHand, 
-                                UnoCard topCard, CollectionOfUnoCards discardPile, 
-                                String gameMode, LinkedList<RecentAction> turnMemory, 
+    public void realisticAITurn(int player, CollectionOfUnoCards playerHand,
+                                UnoCard topCard, CollectionOfUnoCards discardPile,
+                                String gameMode, LinkedList<RecentAction> turnMemory,
                                 int memorySpan) {
         // Attempt to play a card first
         boolean played = false;
         List<Integer> playableCardIndices = new ArrayList<>();
 
-        // Check for playable cards in the AI's hand
+        // Check for playable uno.cards in the AI's hand
         for (int i = 0; i < playerHand.getNumCards(); i++) {
             UnoCard aiPlayedCard = playerHand.getCard(i);
             if (canPlay(aiPlayedCard, topCard)) {
@@ -80,7 +88,7 @@ public class AIPlayer {
             }
         }
 
-        // If there are playable cards, choose one randomly
+        // If there are playable uno.cards, choose one randomly
         if (!playableCardIndices.isEmpty()) {
             Random random = new Random();
             int randomIndex = playableCardIndices.get(random.nextInt(playableCardIndices.size()));
@@ -105,7 +113,7 @@ public class AIPlayer {
                 }
             }
 
-            // Check if the player has no cards left, declare win if there are no cards
+            // Check if the player has no uno.cards left, declare win if there are no uno.cards
             game.checkForWinner(player);
             
             singleCardEffectHandler.handleCardEffect(aiPlayedCard, player, gameMode, game);
@@ -143,10 +151,10 @@ public class AIPlayer {
         return false;
     }
 
-    private void handleDrawIfCannotPlay(CollectionOfUnoCards playerHand, UnoCard topCard, int player, 
-                                        LinkedList<RecentAction> turnMemory, int memorySpan, 
-                                        String gameMode, SinglePlayerUno game, 
-                                        SingleCardEffectHandler singleCardEffectHandler, 
+    private void handleDrawIfCannotPlay(CollectionOfUnoCards playerHand, UnoCard topCard, int player,
+                                        LinkedList<RecentAction> turnMemory, int memorySpan,
+                                        String gameMode, SinglePlayerUno game,
+                                        SingleCardEffectHandler singleCardEffectHandler,
                                         CollectionOfUnoCards discardPile) {
         System.out.println("AI Player " + (player + 1) + " cannot play any card. Drawing a card...");
         game.executeDraw(player, 1);

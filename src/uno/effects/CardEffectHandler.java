@@ -1,3 +1,8 @@
+package uno.effects;
+
+import uno.game.Uno;
+import uno.cards.UnoCard;
+
 public class CardEffectHandler {
     
     public void handleCardEffect(UnoCard chosenCard, int playerIndex, String gameMode, Uno game) {
@@ -30,7 +35,7 @@ public class CardEffectHandler {
     }
     
     private void handleDrawTwo(UnoCard chosenCard, int playerIndex, Uno game) {
-        System.out.println("Next player draws two cards!");
+        System.out.println("Next player draws two uno.cards!");
         game.checkForWinner(game.getCurrentPlayerIndex());
         int nextPlayer = game.getNextActivePlayer(game.getCurrentPlayerIndex());
         game.executeDraw(nextPlayer, 2);
@@ -45,7 +50,7 @@ public class CardEffectHandler {
     private void handleWildDrawFour(UnoCard chosenCard, int playerIndex, Uno game) {
         System.out.println("Wild Draw Four card played! Choosing a new color...");
         chosenCard.setColor(game.promptColorSelection(playerIndex));
-        System.out.println("Next player draws four cards!");
+        System.out.println("Next player draws four uno.cards!");
         game.checkForWinner(game.getCurrentPlayerIndex());
         int nextPlayer = game.getNextActivePlayer(game.getCurrentPlayerIndex());
         game.executeDraw(nextPlayer, 4);
@@ -61,7 +66,7 @@ public class CardEffectHandler {
             game.checkForWinner(nextPlayer);
             game.setCurrentPlayerIndex(game.getNextActivePlayer(game.getCurrentPlayerIndex()));
             int followingPlayer = game.getNextActivePlayer(game.getCurrentPlayerIndex());
-            System.out.println("Player " + (followingPlayer + 1) + " draws 2 cards due to the SegFault card!");
+            System.out.println("Player " + (followingPlayer + 1) + " draws 2 uno.cards due to the SegFault card!");
             game.executeDraw(followingPlayer, 2);
         } else {
             System.out.println("Wild card played! Choosing a new color...");
@@ -95,7 +100,7 @@ public class CardEffectHandler {
                     System.out.println("Player " + (playerIndex + 1) + " is skipped!");
                     game.setCurrentPlayerIndex(game.getNextActivePlayer(game.getCurrentPlayerIndex()));
                     int nextPlayer = game.getNextActivePlayer(game.getCurrentPlayerIndex());
-                    System.out.println("Player " + (nextPlayer + 1) + " draws 2 cards due to the SegFault card!");
+                    System.out.println("Player " + (nextPlayer + 1) + " draws 2 uno.cards due to the SegFault card!");
                     game.executeDraw(nextPlayer, 2);
                 } else if ("Minecraft".equals(gameMode)) {
                     System.out.println("Starting card is a Creeper card, we treat this as Wild.");
@@ -122,13 +127,13 @@ public class CardEffectHandler {
                 break;
 
             case 12: // Draw Two
-                System.out.println("Starting card is a Draw Two. Player " + (playerIndex + 1) + " must draw two cards.");
+                System.out.println("Starting card is a Draw Two. Player " + (playerIndex + 1) + " must draw two uno.cards.");
                 game.executeDraw(playerIndex, 2);
                 game.setCurrentPlayerIndex(game.getNextActivePlayer(game.getCurrentPlayerIndex())); // Move to the next player
                 break;
 
             default:
-                break; // No action needed for regular cards
+                break; // No action needed for regular uno.cards
         }
     }
 

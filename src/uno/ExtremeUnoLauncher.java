@@ -1,3 +1,7 @@
+package uno;
+
+import uno.game.ExtremeUno;
+
 import java.util.Scanner;
 
 public class ExtremeUnoLauncher {
@@ -35,7 +39,7 @@ public class ExtremeUnoLauncher {
                             modeChoice = scanner.nextInt();
                             if (modeChoice == 1) {
                                 String gameMode = "Normal";
-                                System.out.println("Starting Extreme Single Player Uno (Normal) with " + numberOfPlayers + " players...");
+                                System.out.println("Starting Extreme Single Player uno.game.Uno (Normal) with " + numberOfPlayers + " players...");
                                 ExtremeUno singlePlayerGame = new ExtremeUno(numberOfPlayers, gameMode);
                                 singlePlayerGame.playGame();
                                 break; // Exit after starting the game
@@ -44,7 +48,7 @@ public class ExtremeUnoLauncher {
                                 // Optional: You can return to the game mode selection or exit here.
                             } else if (modeChoice == 3) {
                                 String gameMode = "Minecraft";
-                                System.out.println("Starting Extreme Single Player Uno (Minecraft) with " + numberOfPlayers + " players...");
+                                System.out.println("Starting Extreme Single Player uno.game.Uno (Minecraft) with " + numberOfPlayers + " players...");
                                 ExtremeUno singlePlayerGame = new ExtremeUno(numberOfPlayers, gameMode);
                                 singlePlayerGame.playGame();
                                 break; // Exit after starting the game
@@ -58,7 +62,7 @@ public class ExtremeUnoLauncher {
                     }
                     break; // Exit the game mode selection loop
                 } else if (gameModeChoice == 2) {
-                    System.out.println("Multiplayer mode is not available for Extreme Uno yet.");
+                    System.out.println("Multiplayer mode is not available for Extreme uno.game.Uno yet.");
                     System.out.println("Extreme multiplayer is coming soon. Thank you for your patience.");
                     break; // Exit gracefully after notifying the user
                 } else {

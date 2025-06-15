@@ -1,3 +1,7 @@
+package uno.game;
+
+import uno.cards.UnoCard;
+
 import java.util.Random;
 
 public class ExtremeUnoCollection {
@@ -18,7 +22,7 @@ public class ExtremeUnoCollection {
 		if (numCards == MAXCARDS)
 			return false;
 		
-		// Add the card and adjust the number of cards.
+		// Add the card and adjust the number of uno.cards.
 		cards[numCards] = c;
 		numCards++;
 		
@@ -31,7 +35,7 @@ public class ExtremeUnoCollection {
 		if (numCards == 0)
 			return null;
 			
-		// Save the card to return, reduce the number of cards
+		// Save the card to return, reduce the number of uno.cards
 		UnoCard retval = cards[numCards-1];
 		numCards--;
 		
@@ -61,15 +65,15 @@ public class ExtremeUnoCollection {
 	public void makeExtremeDeck(int numberOfPlayers, String gameMode) {
         // Determine how many decks are needed based on the number of players
         int decksNeeded = (int) Math.ceil((double) numberOfPlayers / 8);
-        cards = new UnoCard[112 * decksNeeded]; // Initialize the cards array
+        cards = new UnoCard[112 * decksNeeded]; // Initialize the uno.cards array
 
         // Reset numCards for the new deck creation
         numCards = 0;
 
         // Loop through the required number of decks
         for (int deckCount = 0; deckCount < decksNeeded; deckCount++) {
-            // Making 2 copies of each number card (1-9) and action cards (Skip, Reverse, Draw Two)
-            for (int i = 0; i < 2; i++) { // Loop for number cards 1-9
+            // Making 2 copies of each number card (1-9) and action uno.cards (Skip, Reverse, Draw Two)
+            for (int i = 0; i < 2; i++) { // Loop for number uno.cards 1-9
                 for (int j = 0; j < 4; j++) { // Loop for each color
                     for (int k = 1; k <= 9; k++) {
                         cards[numCards] = new UnoCard(j, k, gameMode);
@@ -83,7 +87,7 @@ public class ExtremeUnoCollection {
                 numCards++;
             }
 
-            // Add 2 copies of action cards for each color
+            // Add 2 copies of action uno.cards for each color
             for (int i = 0; i < 2; i++) { // Loop for each action
                 for (int j = 0; j < 4; j++) { // Loop for each color
                     cards[numCards] = new UnoCard(j, 10, gameMode); // Skip
@@ -95,7 +99,7 @@ public class ExtremeUnoCollection {
                 }
             }
 
-            // Add 4 Wild and 4 Wild Draw Four cards
+            // Add 4 Wild and 4 Wild Draw Four uno.cards
             for (int i = 0; i < 4; i++) { // Loop for Wilds
                 cards[numCards] = new UnoCard(-1, 13, gameMode); // Wild
                 numCards++;
@@ -104,7 +108,7 @@ public class ExtremeUnoCollection {
             }
 
             if ("42".equals(gameMode) || "Minecraft".equals(gameMode)) {
-                for (int i = 0; i < 4; i++) { // Add 4 Special cards
+                for (int i = 0; i < 4; i++) { // Add 4 Special uno.cards
                     cards[numCards] = new UnoCard(-1, 15, gameMode); // Special card
                     numCards++;
                 }
@@ -122,7 +126,7 @@ public class ExtremeUnoCollection {
             // Generate a random index from 0 to i
             int j = r.nextInt(i + 1);
     
-            // Swap cards[i] with the element at random index
+            // Swap uno.cards[i] with the element at random index
             UnoCard temp = cards[i];
             cards[i] = cards[j];
             cards[j] = temp;
@@ -130,10 +134,10 @@ public class ExtremeUnoCollection {
     }    
 	
 	public String toString() {
-        return "Extreme Uno Collection with " + getNumCards() + " cards:\n" + super.toString();
+        return "Extreme uno.game.Uno Collection with " + getNumCards() + " uno.cards:\n" + super.toString();
     }
 	
-	// Returns the number of cards.
+	// Returns the number of uno.cards.
 	public int getNumCards() {
 		return numCards;
 	}
@@ -148,7 +152,7 @@ public class ExtremeUnoCollection {
 	// Returns true iff there's any card in this collection that can be played
 	// on top of c.
 	public boolean canPlay(UnoCard c) {
-        boolean hasPlayableCard = false; // To track if there are any playable cards
+        boolean hasPlayableCard = false; // To track if there are any playable uno.cards
         boolean hasWildDrawFour = false; // To track if there is a Wild Draw Four
     
         for (int i = 0; i < numCards; i++) {
@@ -167,16 +171,16 @@ public class ExtremeUnoCollection {
     
         // Determine return value based on the flags
         if (hasPlayableCard) {
-            return true; // There are playable cards other than Wild Draw Four
+            return true; // There are playable uno.cards other than Wild Draw Four
         } else if (hasWildDrawFour) {
-            return true; // There are no other playable cards but Wild Draw Four is available
+            return true; // There are no other playable uno.cards but Wild Draw Four is available
         } else {
-            return false; // No playable cards at all
+            return false; // No playable uno.cards at all
         }
     }
 
     public boolean canPlayExcludingWildDrawFour(UnoCard c) {
-        // Flag to track if there are any playable cards excluding Wild Draw Four
+        // Flag to track if there are any playable uno.cards excluding Wild Draw Four
         boolean hasPlayableCard = false;
     
         for (int i = 0; i < numCards; i++) {
@@ -190,7 +194,7 @@ public class ExtremeUnoCollection {
             }
         }
     
-        // Return whether there are playable cards excluding Wild Draw Four
+        // Return whether there are playable uno.cards excluding Wild Draw Four
         return hasPlayableCard;
     }
     

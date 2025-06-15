@@ -3,18 +3,19 @@ SRC_DIR = src
 BIN_DIR = bin
 
 # Expand the SOURCES variable
-SOURCES := $(SRC_DIR)/CollectionOfUnoCards.java \
-           $(SRC_DIR)/ExtremeUno.java \
-           $(SRC_DIR)/ExtremeUnoCollection.java \
-           $(SRC_DIR)/ExtremeUnoLauncher.java \
-           $(SRC_DIR)/SinglePlayerUno.java \
-           $(SRC_DIR)/Uno.java \
-           $(SRC_DIR)/UnoCard.java \
-		   $(SRC_DIR)/CardEffectHandler.java \
-		   $(SRC_DIR)/SingleCardEffectHandler.java \
-		   $(SRC_DIR)/RecentAction.java \
-		   $(SRC_DIR)/AIPlayer.java \
-           $(SRC_DIR)/UnoGameLauncher.java
+SOURCES := \
+    $(SRC_DIR)/uno/cards/CollectionOfUnoCards.java \
+    $(SRC_DIR)/uno/game/ExtremeUno.java \
+    $(SRC_DIR)/uno/game/ExtremeUnoCollection.java \
+    $(SRC_DIR)/uno/ExtremeUnoLauncher.java \
+    $(SRC_DIR)/uno/game/SinglePlayerUno.java \
+    $(SRC_DIR)/uno/game/Uno.java \
+    $(SRC_DIR)/uno/cards/UnoCard.java \
+    $(SRC_DIR)/uno/effects/CardEffectHandler.java \
+    $(SRC_DIR)/uno/effects/SingleCardEffectHandler.java \
+    $(SRC_DIR)/uno/model/RecentAction.java \
+    $(SRC_DIR)/uno/ai/AIPlayer.java \
+    $(SRC_DIR)/uno/UnoGameLauncher.java
 
 # Compile all .java files to .class files in the bin directory
 CLASSES := $(SOURCES:$(SRC_DIR)/%.java=$(BIN_DIR)/%.class)
@@ -32,15 +33,15 @@ $(BIN_DIR)/%.class: $(SRC_DIR)/%.java
 	@echo "Running command: javac -d $(BIN_DIR) $(SOURCES)"
 	@javac -d $(BIN_DIR) $(SOURCES)
 
-# Run the Uno game
+# Run the uno.game.Uno game
 run: $(CLASSES)
-	@echo "Running the Uno game..."
-	@java -cp $(BIN_DIR) UnoGameLauncher
+	@echo "Running the uno.game.Uno game..."
+	@java -cp $(BIN_DIR) uno.UnoGameLauncher
 
-# Run the Extreme Uno game
+# Run the Extreme uno.game.Uno game
 run_extreme: $(CLASSES)
-	@echo "Running the Extreme Uno game..."
-	@java -cp $(BIN_DIR) ExtremeUnoLauncher
+	@echo "Running the Extreme uno.game.Uno game..."
+	@java -cp $(BIN_DIR) uno.ExtremeUnoLauncher
 
 # Clean target
 clean:

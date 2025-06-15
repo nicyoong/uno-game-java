@@ -1,3 +1,8 @@
+package uno.effects;
+
+import uno.game.SinglePlayerUno;
+import uno.cards.UnoCard;
+
 public class SingleCardEffectHandler {
     
     public void handleCardEffect(UnoCard playedCard, int playerIndex, String gameMode, SinglePlayerUno game) {
@@ -29,7 +34,7 @@ public class SingleCardEffectHandler {
     }
     
     private void handleDrawTwoCard(int playerIndex, SinglePlayerUno game) {
-        System.out.println("Player " + (playerIndex + 1) + " played Draw Two. Next player must draw 2 cards.");
+        System.out.println("Player " + (playerIndex + 1) + " played Draw Two. Next player must draw 2 uno.cards.");
         game.executeDraw(game.getNextActivePlayer(game.getCurrentPlayerIndex()), 2);
         game.setCurrentPlayerIndex(game.getNextActivePlayer(game.getCurrentPlayerIndex()));
     }
@@ -48,7 +53,7 @@ public class SingleCardEffectHandler {
     }
     
     private void handleWildDrawFourCard(UnoCard playedCard, int playerIndex, SinglePlayerUno game) {
-        System.out.println("Player " + (playerIndex + 1) + " played Wild Draw Four. Next player must draw 4 cards.");
+        System.out.println("Player " + (playerIndex + 1) + " played Wild Draw Four. Next player must draw 4 uno.cards.");
         handleWildCard(playedCard, playerIndex, game);
         game.executeDraw(game.getNextActivePlayer(game.getCurrentPlayerIndex()), 4);
         game.setCurrentPlayerIndex(game.getNextActivePlayer(game.getCurrentPlayerIndex()));
@@ -60,7 +65,7 @@ public class SingleCardEffectHandler {
             handleWildCard(playedCard, playerIndex, game);
             System.out.println("Player " + (game.getNextActivePlayer(game.getCurrentPlayerIndex()) + 1) + "'s turn is skipped.");
             game.setCurrentPlayerIndex(game.getNextActivePlayer(game.getCurrentPlayerIndex()));
-            System.out.println("Player " + (game.getNextActivePlayer(game.getCurrentPlayerIndex()) + 1) + " must draw 2 cards.");
+            System.out.println("Player " + (game.getNextActivePlayer(game.getCurrentPlayerIndex()) + 1) + " must draw 2 uno.cards.");
             game.executeDraw(game.getNextActivePlayer(game.getCurrentPlayerIndex()), 2);
         } else {
             handleWildCard(playedCard, playerIndex, game);
@@ -105,7 +110,7 @@ public class SingleCardEffectHandler {
                     System.out.println("AI Player 1 chose color: " + game.getColorName(chosenColor));
                 }
                 game.setCurrentPlayerIndex(game.getNextPlayer(game.getCurrentPlayerIndex())); // Skip Player 1
-                System.out.println("Player 2 draws 2 cards.");
+                System.out.println("Player 2 draws 2 uno.cards.");
                 game.executeDraw(game.currentPlayerIndex, 2);
             } else if ("Minecraft".equals(gameMode))
             {
@@ -146,12 +151,12 @@ public class SingleCardEffectHandler {
                 game.setClockwise(!game.isClockwise()); // Reverse the direction
                 break;
             case 12: // Draw Two
-                System.out.println("Starting card is a Draw Two. Player 1 must draw two cards.");
+                System.out.println("Starting card is a Draw Two. Player 1 must draw two uno.cards.");
                 game.executeDraw(game.currentPlayerIndex, 2);
                 game.setCurrentPlayerIndex(game.getNextPlayer(game.getCurrentPlayerIndex())); // Move to the next player
                 break;
             default:
-                break; // No action needed for regular cards
+                break; // No action needed for regular uno.cards
         }
     }
     

@@ -1,3 +1,9 @@
+package uno.game;
+
+import uno.cards.CollectionOfUnoCards;
+import uno.cards.UnoCard;
+import uno.effects.CardEffectHandler;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -42,7 +48,7 @@ public class Uno {
             hands.add(new CollectionOfUnoCards());
         }
 
-        // Deal cards to each player.
+        // Deal uno.cards to each player.
         for (int i = 0; i < NUMCARDSHAND; i++) {
             for (int j = 0; j < numPlayers; j++) {
                 hands.get(j).addCard(deck.removeFromTop());
@@ -53,7 +59,7 @@ public class Uno {
 
         currentPlayerIndex = 0; // Start with the first player
 
-        // Initialize the CardEffectHandler
+        // Initialize the uno.effects.CardEffectHandler
         cardEffectHandler = new CardEffectHandler();
 
         cardEffectHandler.handleStartingCardEffect(startingCard, 0, gameMode, this);
@@ -76,7 +82,7 @@ public class Uno {
     }
 
     public void checkForWinner(int playerIndex) {
-        // Check if the current player finished their cards
+        // Check if the current player finished their uno.cards
         if (hands.get(playerIndex).getNumCards() == 0) {
             System.out.println("Player " + (playerIndex + 1) + " has finished!");
             
@@ -115,7 +121,7 @@ public class Uno {
             }
         }
 
-        // Determine the last player and count their remaining cards
+        // Determine the last player and count their remaining uno.cards
         int lastPlayerIndex = -1;
         int lastPlayerCardCount = 0;
         for (int i = 0; i < numPlayers; i++) {
@@ -135,7 +141,7 @@ public class Uno {
 
         // Print the last player
         if (lastPlayerIndex != -1) {
-            System.out.println((finishingOrder.size() + 1) + ": Player " + (lastPlayerIndex + 1) + " (still has " + lastPlayerCardCount + " cards)");
+            System.out.println((finishingOrder.size() + 1) + ": Player " + (lastPlayerIndex + 1) + " (still has " + lastPlayerCardCount + " uno.cards)");
         }
 
         // printResult();
@@ -210,10 +216,10 @@ public class Uno {
                     
                     // Check if the chosen card is a Wild Draw Four
                     if (chosenCard.getNumber() == 14) { // Wild Draw Four
-                        // Check if there are other playable cards
+                        // Check if there are other playable uno.cards
                         if (playerHand.canPlayExcludingWildDrawFour(topCard)) {
-                            // If there are other playable cards, inform the player and prompt again
-                            System.out.println("You have other playable cards. You cannot play a Wild Draw Four now.");
+                            // If there are other playable uno.cards, inform the player and prompt again
+                            System.out.println("You have other playable uno.cards. You cannot play a Wild Draw Four now.");
                             continue; // Go back to choosing a card again
                         }
                     }
@@ -236,14 +242,14 @@ public class Uno {
     }
 
     public void executeDraw(int playerIndex, int numCards) {
-        // Check if the deck has enough cards
+        // Check if the deck has enough uno.cards
         if (deck.getNumCards() < numCards) {
-            System.out.println("Current number of cards in the deck: " + deck.getNumCards());
-            System.out.println("Not enough cards in the deck.");
+            System.out.println("Current number of uno.cards in the deck: " + deck.getNumCards());
+            System.out.println("Not enough uno.cards in the deck.");
             shuffleDiscardPileIntoDeck();
         }
         
-        // Now draw the cards
+        // Now draw the uno.cards
         CollectionOfUnoCards playerHand = hands.get(playerIndex);
         for (int i = 0; i < numCards; i++) {
             // Reshuffle if deck is empty before drawing each card
@@ -259,13 +265,13 @@ public class Uno {
     
                 // Check if the drawn card is a Creeper card
                 if (drawnCard.isCreeper()) {
-                    System.out.println("Player " + (playerIndex + 1) + " has drawn a Creeper card and must draw 3 more cards.");
+                    System.out.println("Player " + (playerIndex + 1) + " has drawn a Creeper card and must draw 3 more uno.cards.");
     
-                    // Draw 3 additional cards as per Creeper rule
+                    // Draw 3 additional uno.cards as per Creeper rule
                     for (int j = 0; j < 3; j++) {
                         // Reshuffle if deck is empty before each additional draw
                         if (deck.getNumCards() == 0) {
-                            System.out.println("Deck is empty while drawing additional cards for Creeper.");
+                            System.out.println("Deck is empty while drawing additional uno.cards for Creeper.");
                             shuffleDiscardPileIntoDeck();
                         }
     
@@ -293,10 +299,10 @@ public class Uno {
         
         // Check if the player has a playable card
         if (!playerHand.canPlay(topCard)) {
-            System.out.println("No playable cards. Drawing a card...");
+            System.out.println("No playable uno.cards. Drawing a card...");
             executeDraw(player, 1);
             if (!playerHand.canPlay(topCard)) {
-                System.out.println("Still no playable cards. Turn is skipped.");
+                System.out.println("Still no playable uno.cards. Turn is skipped.");
                 return;
             }
         }
@@ -322,7 +328,7 @@ public class Uno {
 
         checkForWinner(currentPlayerIndex);
         
-        // Check for action cards and execute their effects
+        // Check for action uno.cards and execute their effects
         cardEffectHandler.handleCardEffect(chosenCard, player, gameMode, this);
     }
      
@@ -330,22 +336,22 @@ public class Uno {
         System.out.println("Shuffling the discard pile back into the deck.");
     
         if (discardPile.getNumCards() == 0) {
-            System.out.println("Discard pile is empty. No cards to shuffle.");
+            System.out.println("Discard pile is empty. No uno.cards to shuffle.");
             return; // Exit if there's nothing to shuffle
         }
     
         UnoCard topCard = discardPile.getTopCard(); // Get the top card to keep it
-        CollectionOfUnoCards newDeck = new CollectionOfUnoCards(); // New deck for shuffled cards
+        CollectionOfUnoCards newDeck = new CollectionOfUnoCards(); // New deck for shuffled uno.cards
     
-        // Move cards from discard pile except the top one
+        // Move uno.cards from discard pile except the top one
         while (discardPile.getNumCards() > 1) { // Continue until only the top card remains
-            newDeck.addCard(discardPile.remove(0)); // Remove from index 0 to get cards correctly
+            newDeck.addCard(discardPile.remove(0)); // Remove from index 0 to get uno.cards correctly
         }
     
         // Shuffle the new deck
         newDeck.shuffle();
     
-        // Add shuffled cards back to the main deck
+        // Add shuffled uno.cards back to the main deck
         while (newDeck.getNumCards() > 0) {
             deck.addCard(newDeck.removeFromTop()); // Correctly remove from newDeck and add to the main deck
         }
