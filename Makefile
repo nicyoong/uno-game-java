@@ -8,7 +8,12 @@ SOURCES := \
     $(SRC_DIR)/uno/game/ExtremeUno.java \
     $(SRC_DIR)/uno/game/ExtremeUnoCollection.java \
     $(SRC_DIR)/uno/ExtremeUnoLauncher.java \
-    $(SRC_DIR)/uno/game/SinglePlayerUno.java \
+    $(SRC_DIR)/uno/game/GameStateManager.java \
+    $(SRC_DIR)/uno/game/CardDeckManager.java \
+    $(SRC_DIR)/uno/game/PlayerManager.java \
+    $(SRC_DIR)/uno/game/HumanPlayerController.java \
+    $(SRC_DIR)/uno/game/OutputRenderer.java \
+    $(SRC_DIR)/uno/game/GameFlowController.java \
     $(SRC_DIR)/uno/game/Uno.java \
     $(SRC_DIR)/uno/cards/UnoCard.java \
     $(SRC_DIR)/uno/effects/CardEffectHandler.java \
