@@ -43,6 +43,10 @@ public class GameFlowController {
         setupGame();
     }
 
+    public HumanPlayerController getHumanController() {
+        return humanController;
+    }
+
     private void validatePlayerCount(int numPlayers) {
         if (numPlayers < MIN_PLAYERS || numPlayers > MAX_PLAYERS) {
             throw new IllegalArgumentException("Players must be between " +
