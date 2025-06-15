@@ -1,11 +1,11 @@
 package uno.effects;
 
-import uno.game.SinglePlayerUno;
+import uno.game.*;
 import uno.cards.UnoCard;
 
 public class SingleCardEffectHandler {
     
-    public void handleCardEffect(UnoCard playedCard, int playerIndex, String gameMode, SinglePlayerUno game) {
+    public void handleCardEffect(UnoCard playedCard, int playerIndex, String gameMode, GameFlowController game) {
         int cardNumber = playedCard.getNumber();
     
         if (cardNumber == 10) {
@@ -22,141 +22,166 @@ public class SingleCardEffectHandler {
             handleSegFaultCard(playedCard, playerIndex, gameMode, game);
         }
     }
-    
-    private void handleSkipCard(int playerIndex, SinglePlayerUno game) {
+
+    private void handleSkipCard(int playerIndex, GameFlowController game) {
         System.out.println("Player " + (playerIndex + 1) + " played Skip. Next player's turn is skipped.");
-        game.setCurrentPlayerIndex(game.getNextActivePlayer(game.getCurrentPlayerIndex()));
+        game.getGameState().setCurrentPlayerIndex(
+                game.getGameState().getNextActivePlayer(game.getGameState().getCurrentPlayerIndex())
+        );
     }
-    
-    private void handleReverseCard(int playerIndex, SinglePlayerUno game) {
+
+    private void handleReverseCard(int playerIndex, GameFlowController game) {
         System.out.println("Player " + (playerIndex + 1) + " played Reverse. Turn order is reversed.");
-        game.setClockwise(!game.isClockwise());
+        game.getGameState().setClockwise(!game.getGameState().isClockwise());
     }
-    
-    private void handleDrawTwoCard(int playerIndex, SinglePlayerUno game) {
-        System.out.println("Player " + (playerIndex + 1) + " played Draw Two. Next player must draw 2 uno.cards.");
-        game.executeDraw(game.getNextActivePlayer(game.getCurrentPlayerIndex()), 2);
-        game.setCurrentPlayerIndex(game.getNextActivePlayer(game.getCurrentPlayerIndex()));
+
+    private void handleDrawTwoCard(int playerIndex, GameFlowController game) {
+        System.out.println("Player " + (playerIndex + 1) + " played Draw Two. Next player must draw 2 cards.");
+        int nextPlayer = game.getGameState().getNextActivePlayer(game.getGameState().getCurrentPlayerIndex());
+        game.drawCardsWithCreeperCheck(nextPlayer, 2);
+        game.getGameState().setCurrentPlayerIndex(
+                game.getGameState().getNextActivePlayer(game.getGameState().getCurrentPlayerIndex())
+        );
     }
-    
-    private void handleWildCard(UnoCard playedCard, int playerIndex, SinglePlayerUno game) {
-        if (playerIndex == game.humanPlayerIndex) {
-            // Human player chooses color
-            int color = game.promptColorSelection(playerIndex);
+
+    private void handleWildCard(UnoCard playedCard, int playerIndex, GameFlowController game) {
+        OutputRenderer renderer = game.getOutputRenderer();
+
+        if (playerIndex == game.getGameState().getHumanPlayerIndex()) {
+            int color = game.getHumanController().promptColorSelection();
             playedCard.setColor(color);
+            renderer.showMessage("You chose color: " + UnoCard.getColorName(color));
         } else {
-            // AI chooses color
             int color = game.chooseRandomColor();
             playedCard.setColor(color);
-            System.out.println("AI Player " + (playerIndex + 1) + " chose color: " + game.getColorName(color));
+            renderer.showMessage("AI Player " + (playerIndex + 1) +
+                    " chose color: " + UnoCard.getColorName(color));
         }
     }
-    
-    private void handleWildDrawFourCard(UnoCard playedCard, int playerIndex, SinglePlayerUno game) {
-        System.out.println("Player " + (playerIndex + 1) + " played Wild Draw Four. Next player must draw 4 uno.cards.");
+
+    private void handleWildDrawFourCard(UnoCard playedCard, int playerIndex, GameFlowController game) {
+        System.out.println("Player " + (playerIndex + 1) + " played Wild Draw Four. Next player must draw 4 cards.");
         handleWildCard(playedCard, playerIndex, game);
-        game.executeDraw(game.getNextActivePlayer(game.getCurrentPlayerIndex()), 4);
-        game.setCurrentPlayerIndex(game.getNextActivePlayer(game.getCurrentPlayerIndex()));
+        int nextPlayer = game.getGameState().getNextActivePlayer(game.getGameState().getCurrentPlayerIndex());
+        game.drawCardsWithCreeperCheck(nextPlayer, 4);
+        game.getGameState().setCurrentPlayerIndex(
+                game.getGameState().getNextActivePlayer(game.getGameState().getCurrentPlayerIndex())
+        );
     }
-    
-    private void handleSegFaultCard(UnoCard playedCard, int playerIndex, String gameMode, SinglePlayerUno game) {
+
+    private void handleSegFaultCard(UnoCard playedCard, int playerIndex, String gameMode, GameFlowController game) {
+        GameStateManager gameState = game.getGameState();
+        OutputRenderer renderer = game.getOutputRenderer();
+
         if ("42".equals(gameMode)) {
-            System.out.println("SegFault card played! Choosing a new color...");
+            renderer.showMessage("SegFault card played! Choosing a new color...");
             handleWildCard(playedCard, playerIndex, game);
-            System.out.println("Player " + (game.getNextActivePlayer(game.getCurrentPlayerIndex()) + 1) + "'s turn is skipped.");
-            game.setCurrentPlayerIndex(game.getNextActivePlayer(game.getCurrentPlayerIndex()));
-            System.out.println("Player " + (game.getNextActivePlayer(game.getCurrentPlayerIndex()) + 1) + " must draw 2 uno.cards.");
-            game.executeDraw(game.getNextActivePlayer(game.getCurrentPlayerIndex()), 2);
+
+            int nextPlayer = gameState.getNextActivePlayer(gameState.getCurrentPlayerIndex());
+            renderer.showMessage("Player " + (nextPlayer + 1) + "'s turn is skipped.");
+            gameState.setCurrentPlayerIndex(nextPlayer);
+
+            int drawPlayer = gameState.getNextActivePlayer(gameState.getCurrentPlayerIndex());
+            renderer.showMessage("Player " + (drawPlayer + 1) + " must draw 2 cards.");
+            game.drawCardsWithCreeperCheck(drawPlayer, 2);
         } else {
             handleWildCard(playedCard, playerIndex, game);
         }
     }
 
-    public void handleStartingCardEffect(UnoCard startingCard, String gameMode, SinglePlayerUno game) {
+    public void handleStartingCardEffect(UnoCard startingCard, String gameMode, GameFlowController game) {
+        GameStateManager gameState = game.getGameState();
+        OutputRenderer renderer = game.getOutputRenderer();
+        CardDeckManager deckManager = game.getDeckManager();
+        HumanPlayerController humanController = game.getHumanController();
+
         if (startingCard.getNumber() == 13) { // Wild
-            System.out.println("Starting card is a Wild. Player 1 can choose the starting color.");
-            
-            // Check if Player 1 is human or AI
-            if (game.humanPlayerIndex == 0) {
-                int chosenColor = game.promptColorSelection(0); // Prompt human player for a color
-                startingCard.setColor(chosenColor); // Set chosen color
-            } else {
-                int chosenColor = game.chooseRandomColor(); // AI chooses color
+            renderer.showMessage("Starting card is a Wild. Player 1 can choose the starting color.");
+
+            if (gameState.getHumanPlayerIndex() == 0) {
+                int chosenColor = humanController.promptColorSelection();
                 startingCard.setColor(chosenColor);
-                System.out.println("AI Player 1 chose color: " + game.getColorName(chosenColor));
+                renderer.showMessage("You chose color: " + UnoCard.getColorName(chosenColor));
+            } else {
+                int chosenColor = game.chooseRandomColor();
+                startingCard.setColor(chosenColor);
+                renderer.showMessage("AI Player 1 chose color: " + UnoCard.getColorName(chosenColor));
             }
-            
+
         } else if (startingCard.getNumber() == 14) { // Wild Draw Four
+            renderer.showMessage("Starting card is a Wild Draw Four. Returning it to the deck and drawing a new starting card.");
+            deckManager.getDiscardPile().removeFromTop(); // Remove from discard
+            deckManager.returnCardToDeckAndShuffle(startingCard); // Return to deck and shuffle
+            UnoCard newStartingCard = deckManager.drawCard();
+            deckManager.addToDiscardPile(newStartingCard); // Add new card to discard
+            renderer.showMessage("New starting card: " + newStartingCard);
 
-            System.out.println("Starting card is a Wild Draw Four. Returning it to the deck and drawing a new starting card.");
-            game.deck.addCard(startingCard); // Return Wild Draw Four to the deck
-            game.deck.shuffle(); // Reshuffle the deck
-            startingCard = game.deck.removeFromTop(); // Draw a new starting card
             // Handle the new starting card after drawing
-            handleStartingCardEffect(startingCard, gameMode, game); // Recursively call to handle the new card
-            return; // Exit after handling the new starting card
+            handleStartingCardEffect(newStartingCard, gameMode, game);
+            return;
 
-        } else if (startingCard.getNumber() == 15) { 
-
-            if ("42".equals(gameMode))
-            {
-                System.out.println("Starting card is a SegFault. Player 1 can choose the starting color, but must skip.");
-                if (game.humanPlayerIndex == 0) {
-                    int chosenColor = game.promptColorSelection(0); // Prompt human player for a color
-                    startingCard.setColor(chosenColor); // Set chosen color
-                } else {
-                    int chosenColor = game.chooseRandomColor(); // AI chooses color
+        } else if (startingCard.getNumber() == 15) {
+            if ("42".equals(gameMode)) {
+                renderer.showMessage("Starting card is a SegFault. Player 1 can choose the starting color, but must skip.");
+                if (gameState.getHumanPlayerIndex() == 0) {
+                    int chosenColor = humanController.promptColorSelection();
                     startingCard.setColor(chosenColor);
-                    System.out.println("AI Player 1 chose color: " + game.getColorName(chosenColor));
+                    renderer.showMessage("You chose color: " + UnoCard.getColorName(chosenColor));
+                } else {
+                    int chosenColor = game.chooseRandomColor();
+                    startingCard.setColor(chosenColor);
+                    renderer.showMessage("AI Player 1 chose color: " + UnoCard.getColorName(chosenColor));
                 }
-                game.setCurrentPlayerIndex(game.getNextPlayer(game.getCurrentPlayerIndex())); // Skip Player 1
-                System.out.println("Player 2 draws 2 uno.cards.");
-                game.executeDraw(game.currentPlayerIndex, 2);
-            } else if ("Minecraft".equals(gameMode))
-            {
-                System.out.println("Starting card is a Creeper. Player 1 can choose the starting color.");
-            
-                // Check if Player 1 is human or AI
-                if (game.humanPlayerIndex == 0) {
-                    int chosenColor = game.promptColorSelection(0); // Prompt human player for a color
-                    startingCard.setColor(chosenColor); // Set chosen color
-                } else {
-                    int chosenColor = game.chooseRandomColor(); // AI chooses color
+
+                // Skip Player 1 (index 0)
+                gameState.setCurrentPlayerIndex(gameState.getNextPlayer(0));
+                renderer.showMessage("Player 2 draws 2 cards.");
+                game.drawCardsWithCreeperCheck(1, 2); // Player 2 is index 1
+
+            } else if ("Minecraft".equals(gameMode)) {
+                renderer.showMessage("Starting card is a Creeper. Player 1 can choose the starting color.");
+
+                if (gameState.getHumanPlayerIndex() == 0) {
+                    int chosenColor = humanController.promptColorSelection();
                     startingCard.setColor(chosenColor);
-                    System.out.println("AI Player 1 chose color: " + game.getColorName(chosenColor));
+                    renderer.showMessage("You chose color: " + UnoCard.getColorName(chosenColor));
+                } else {
+                    int chosenColor = game.chooseRandomColor();
+                    startingCard.setColor(chosenColor);
+                    renderer.showMessage("AI Player 1 chose color: " + UnoCard.getColorName(chosenColor));
                 }
             } else {
-                System.out.println("Starting card is a Special. Player 1 can choose the starting color.");
-            
-                // Check if Player 1 is human or AI
-                if (game.humanPlayerIndex == 0) {
-                    int chosenColor = game.promptColorSelection(0); // Prompt human player for a color
-                    startingCard.setColor(chosenColor); // Set chosen color
-                } else {
-                    int chosenColor = game.chooseRandomColor(); // AI chooses color
+                renderer.showMessage("Starting card is a Special. Player 1 can choose the starting color.");
+
+                if (gameState.getHumanPlayerIndex() == 0) {
+                    int chosenColor = humanController.promptColorSelection();
                     startingCard.setColor(chosenColor);
-                    System.out.println("AI Player 1 chose color: " + game.getColorName(chosenColor));
+                    renderer.showMessage("You chose color: " + UnoCard.getColorName(chosenColor));
+                } else {
+                    int chosenColor = game.chooseRandomColor();
+                    startingCard.setColor(chosenColor);
+                    renderer.showMessage("AI Player 1 chose color: " + UnoCard.getColorName(chosenColor));
                 }
             }
-
         }
-    
+
+        // Handle standard starting card effects
         switch (startingCard.getNumber()) {
             case 10: // Skip
-                System.out.println("Starting card is a Skip. Player 1's turn is skipped.");
-                game.setCurrentPlayerIndex(game.getNextPlayer(game.getCurrentPlayerIndex())); // Skip Player 1
+                renderer.showMessage("Starting card is a Skip. Player 1's turn is skipped.");
+                gameState.setCurrentPlayerIndex(gameState.getNextPlayer(0));
                 break;
             case 11: // Reverse
-                System.out.println("Starting card is a Reverse. Turn order is reversed.");
-                game.setClockwise(!game.isClockwise()); // Reverse the direction
+                renderer.showMessage("Starting card is a Reverse. Turn order is reversed.");
+                gameState.setClockwise(!gameState.isClockwise());
                 break;
             case 12: // Draw Two
-                System.out.println("Starting card is a Draw Two. Player 1 must draw two uno.cards.");
-                game.executeDraw(game.currentPlayerIndex, 2);
-                game.setCurrentPlayerIndex(game.getNextPlayer(game.getCurrentPlayerIndex())); // Move to the next player
+                renderer.showMessage("Starting card is a Draw Two. Player 1 must draw two cards.");
+                game.drawCardsWithCreeperCheck(0, 2);
+                gameState.setCurrentPlayerIndex(gameState.getNextPlayer(0));
                 break;
             default:
-                break; // No action needed for regular uno.cards
+                break; // No action needed for regular cards
         }
     }
     
