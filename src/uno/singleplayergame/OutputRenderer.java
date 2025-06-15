@@ -31,7 +31,6 @@ public class OutputRenderer {
     }
 
     public void showResults(GameStateManager gameState, PlayerManager playerManager, String humanPlayerName) {
-        System.out.println("\nGame Over!");
         System.out.println("Player rankings:");
 
         List<Integer> finishingOrder = gameState.getFinishingOrder();

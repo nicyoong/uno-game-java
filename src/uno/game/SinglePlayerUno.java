@@ -108,7 +108,8 @@ public class SinglePlayerUno {
             }
         }
 
-        outputRenderer.showResults(gameState, playerManager, humanPlayerName);
+        System.out.println("\nGame Over!");
+//        outputRenderer.showResults(gameState, playerManager, humanPlayerName);
         scanner.close();
     }
 
