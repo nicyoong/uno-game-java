@@ -80,7 +80,21 @@ public class SinglePlayerUno {
         LinkedList<RecentAction> turnMemory = new LinkedList<>();
         final int memorySpan = 12;
 
-        while (gameState.getFinishingOrder().size() < gameState.getNumPlayers() - 1) {
+//        while (gameState.getFinishingOrder().size() < gameState.getNumPlayers() - 1) {
+//            int currentPlayer = gameState.getCurrentPlayerIndex();
+//
+//            if (!gameState.getFinishingOrder().contains(currentPlayer)) {
+//                playTurn(currentPlayer, turnMemory, memorySpan);
+//            }
+//
+//            gameState.setCurrentPlayerIndex(gameState.getNextActivePlayer(currentPlayer));
+//
+//            if (deckManager.getDeck().getNumCards() == 0) {
+//                deckManager.shuffleDiscardPileIntoDeck();
+//            }
+//        }
+
+        while (gameState.getFinishingOrder().isEmpty()) {
             int currentPlayer = gameState.getCurrentPlayerIndex();
 
             if (!gameState.getFinishingOrder().contains(currentPlayer)) {
