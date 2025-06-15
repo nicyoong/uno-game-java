@@ -54,4 +54,9 @@ public class CardDeckManager {
     public CollectionOfUnoCards getDiscardPile() {
         return discardPile;
     }
+
+    public void returnCardToDeckAndShuffle(UnoCard card) {
+        deck.addCard(card);
+        deck.shuffle();
+    }
 }
