@@ -1,16 +1,15 @@
 package uno.effects;
 
-import uno.game.MultiplayerGame;
+import uno.game.Uno;
 import uno.cards.UnoCard;
 import uno.multiplayergame.OutputRenderer;
 import uno.multiplayergame.GameStateManager;
-import uno.multiplayergame.HumanPlayerController;
 
 public class CardEffectHandler {
     private final OutputRenderer outputRenderer = new OutputRenderer();
 
     public void handleCardEffect(UnoCard chosenCard, int playerIndex,
-                                 String gameMode, MultiplayerGame game) {
+                                 String gameMode, Uno game) {
         int cardNumber = chosenCard.getNumber();
 
         if (cardNumber == 10) { // Skip
@@ -28,19 +27,19 @@ public class CardEffectHandler {
         }
     }
 
-    private void handleSkip(MultiplayerGame game) {
+    private void handleSkip(Uno game) {
         outputRenderer.showMessage("Next player is skipped!");
         GameStateManager state = game.getGameState();
         state.setCurrentPlayerIndex(state.getNextActivePlayer(state.getCurrentPlayerIndex()));
     }
 
-    private void handleReverse(MultiplayerGame game) {
+    private void handleReverse(Uno game) {
         outputRenderer.showMessage("Turn order reversed!");
         GameStateManager state = game.getGameState();
         state.setClockwise(!state.isClockwise());
     }
 
-    private void handleDrawTwo(MultiplayerGame game) {
+    private void handleDrawTwo(Uno game) {
         outputRenderer.showMessage("Next player draws two cards!");
         GameStateManager state = game.getGameState();
         int nextPlayer = state.getNextActivePlayer(state.getCurrentPlayerIndex());
@@ -48,14 +47,14 @@ public class CardEffectHandler {
         state.setCurrentPlayerIndex(state.getNextActivePlayer(state.getCurrentPlayerIndex()));
     }
 
-    private void handleWild(UnoCard chosenCard, int playerIndex, MultiplayerGame game) {
+    private void handleWild(UnoCard chosenCard, int playerIndex, Uno game) {
         outputRenderer.showMessage("Wild card played! Choosing a new color...");
         int color = game.getHumanController().promptColorSelection(playerIndex);
         chosenCard.setColor(color);
         outputRenderer.showMessage("Color set to: " + UnoCard.getColorName(color));
     }
 
-    private void handleWildDrawFour(UnoCard chosenCard, int playerIndex, MultiplayerGame game) {
+    private void handleWildDrawFour(UnoCard chosenCard, int playerIndex, Uno game) {
         outputRenderer.showMessage("Wild Draw Four card played! Choosing a new color...");
         handleWild(chosenCard, playerIndex, game);
         outputRenderer.showMessage("Next player draws four cards!");
@@ -67,7 +66,7 @@ public class CardEffectHandler {
     }
 
     private void handleSpecialCard(UnoCard chosenCard, int playerIndex,
-                                   String gameMode, MultiplayerGame game) {
+                                   String gameMode, Uno game) {
         GameStateManager state = game.getGameState();
 
         if ("42".equals(gameMode)) {
@@ -88,7 +87,7 @@ public class CardEffectHandler {
     }
 
     public void handleStartingCardEffect(UnoCard startingCard, int playerIndex,
-                                         String gameMode, MultiplayerGame game) {
+                                         String gameMode, Uno game) {
         GameStateManager state = game.getGameState();
 
         switch (startingCard.getNumber()) {

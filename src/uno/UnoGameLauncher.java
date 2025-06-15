@@ -1,7 +1,7 @@
 package uno;
 
 import uno.singleplayergame.GameFlowController;
-import uno.game.MultiplayerGame;
+import uno.game.Uno;
 import java.util.Scanner;
 import java.util.logging.*;
 
@@ -60,8 +60,8 @@ public class UnoGameLauncher {
                     "Starting Multiplayer Uno with {0} players in {1} mode...",
                     new Object[]{numPlayers, gameMode}
             );
-            MultiplayerGame multiplayerGame = new MultiplayerGame(numPlayers, gameMode);
-            multiplayerGame.playGame(gameMode);
+            Uno Uno = new Uno(numPlayers, gameMode);
+            Uno.playGame(gameMode);
         }
 
         scanner.close();
