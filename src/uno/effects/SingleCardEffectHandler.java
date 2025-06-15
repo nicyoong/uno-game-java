@@ -1,11 +1,12 @@
 package uno.effects;
 
 import uno.cards.UnoCard;
+import uno.game.SinglePlayerUno;
 import uno.singleplayergame.*;
 
 public class SingleCardEffectHandler {
     
-    public void handleCardEffect(UnoCard playedCard, int playerIndex, String gameMode, GameFlowController game) {
+    public void handleCardEffect(UnoCard playedCard, int playerIndex, String gameMode, SinglePlayerUno game) {
         int cardNumber = playedCard.getNumber();
     
         if (cardNumber == 10) {
@@ -23,19 +24,19 @@ public class SingleCardEffectHandler {
         }
     }
 
-    private void handleSkipCard(int playerIndex, GameFlowController game) {
+    private void handleSkipCard(int playerIndex, SinglePlayerUno game) {
         System.out.println("Player " + (playerIndex + 1) + " played Skip. Next player's turn is skipped.");
         game.getGameState().setCurrentPlayerIndex(
                 game.getGameState().getNextActivePlayer(game.getGameState().getCurrentPlayerIndex())
         );
     }
 
-    private void handleReverseCard(int playerIndex, GameFlowController game) {
+    private void handleReverseCard(int playerIndex, SinglePlayerUno game) {
         System.out.println("Player " + (playerIndex + 1) + " played Reverse. Turn order is reversed.");
         game.getGameState().setClockwise(!game.getGameState().isClockwise());
     }
 
-    private void handleDrawTwoCard(int playerIndex, GameFlowController game) {
+    private void handleDrawTwoCard(int playerIndex, SinglePlayerUno game) {
         System.out.println("Player " + (playerIndex + 1) + " played Draw Two. Next player must draw 2 cards.");
         int nextPlayer = game.getGameState().getNextActivePlayer(game.getGameState().getCurrentPlayerIndex());
         game.drawCardsWithCreeperCheck(nextPlayer, 2);
@@ -44,7 +45,7 @@ public class SingleCardEffectHandler {
         );
     }
 
-    private void handleWildCard(UnoCard playedCard, int playerIndex, GameFlowController game) {
+    private void handleWildCard(UnoCard playedCard, int playerIndex, SinglePlayerUno game) {
         OutputRenderer renderer = game.getOutputRenderer();
 
         if (playerIndex == game.getGameState().getHumanPlayerIndex()) {
@@ -59,7 +60,7 @@ public class SingleCardEffectHandler {
         }
     }
 
-    private void handleWildDrawFourCard(UnoCard playedCard, int playerIndex, GameFlowController game) {
+    private void handleWildDrawFourCard(UnoCard playedCard, int playerIndex, SinglePlayerUno game) {
         System.out.println("Player " + (playerIndex + 1) + " played Wild Draw Four. Next player must draw 4 cards.");
         handleWildCard(playedCard, playerIndex, game);
         int nextPlayer = game.getGameState().getNextActivePlayer(game.getGameState().getCurrentPlayerIndex());
@@ -69,7 +70,7 @@ public class SingleCardEffectHandler {
         );
     }
 
-    private void handleSegFaultCard(UnoCard playedCard, int playerIndex, String gameMode, GameFlowController game) {
+    private void handleSegFaultCard(UnoCard playedCard, int playerIndex, String gameMode, SinglePlayerUno game) {
         GameStateManager gameState = game.getGameState();
         OutputRenderer renderer = game.getOutputRenderer();
 
@@ -89,7 +90,7 @@ public class SingleCardEffectHandler {
         }
     }
 
-    public void handleStartingCardEffect(UnoCard startingCard, String gameMode, GameFlowController game) {
+    public void handleStartingCardEffect(UnoCard startingCard, String gameMode, SinglePlayerUno game) {
         GameStateManager gameState = game.getGameState();
         OutputRenderer renderer = game.getOutputRenderer();
         CardDeckManager deckManager = game.getDeckManager();

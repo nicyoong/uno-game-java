@@ -1,16 +1,17 @@
-package uno.singleplayergame;
+package uno.game;
 
 import uno.ai.AIPlayer;
 import uno.cards.CollectionOfUnoCards;
 import uno.effects.SingleCardEffectHandler;
 import uno.cards.UnoCard;
 import uno.model.RecentAction;
+import uno.singleplayergame.*;
 
 import java.util.LinkedList;
 import java.util.Random;
 import java.util.Scanner;
 
-public class GameFlowController {
+public class SinglePlayerUno {
     private static final int NUMCARDSHAND = 7;
     private static final int MIN_PLAYERS = 2;
     private static final int MAX_PLAYERS = 10;
@@ -26,7 +27,7 @@ public class GameFlowController {
     private int difficulty;
     private String humanPlayerName;
 
-    public GameFlowController(int numPlayers, String gameMode, int difficulty) {
+    public SinglePlayerUno(int numPlayers, String gameMode, int difficulty) {
         validatePlayerCount(numPlayers);
 
         this.gameMode = gameMode;

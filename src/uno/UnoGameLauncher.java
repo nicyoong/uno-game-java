@@ -1,6 +1,6 @@
 package uno;
 
-import uno.singleplayergame.GameFlowController;
+import uno.game.SinglePlayerUno;
 import uno.game.Uno;
 import java.util.Scanner;
 import java.util.logging.*;
@@ -53,7 +53,7 @@ public class UnoGameLauncher {
                     "Starting Single Player Uno with {0} players in {1} mode and difficulty {2}...",
                     new Object[]{numPlayers, gameMode, difficulty}
             );
-            GameFlowController gameController = new GameFlowController(numPlayers, gameMode, difficulty);
+            SinglePlayerUno gameController = new SinglePlayerUno(numPlayers, gameMode, difficulty);
             gameController.playGame();
         } else {
             LOGGER.log(Level.INFO,
