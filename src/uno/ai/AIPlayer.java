@@ -2,7 +2,7 @@ package uno.ai;
 
 import uno.model.RecentAction;
 import uno.effects.SingleCardEffectHandler;
-import uno.game.GameFlowController;
+import uno.singleplayergame.GameFlowController;
 import uno.cards.CollectionOfUnoCards;
 import uno.cards.UnoCard;
 

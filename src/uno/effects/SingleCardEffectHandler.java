@@ -1,7 +1,7 @@
 package uno.effects;
 
-import uno.game.*;
 import uno.cards.UnoCard;
+import uno.singleplayergame.*;
 
 public class SingleCardEffectHandler {
     

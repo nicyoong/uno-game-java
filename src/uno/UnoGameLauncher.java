@@ -1,6 +1,6 @@
 package uno;
 
-import uno.game.GameFlowController;
+import uno.singleplayergame.GameFlowController;
 import uno.game.Uno;
 import java.util.Scanner;
 import java.util.logging.*;

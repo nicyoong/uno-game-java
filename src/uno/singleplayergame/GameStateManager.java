@@ -1,4 +1,4 @@
-package uno.game;
+package uno.singleplayergame;
 
 import java.util.ArrayList;
 import java.util.List;

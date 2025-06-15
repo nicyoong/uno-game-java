@@ -1,4 +1,4 @@
-package uno.game;
+package uno.singleplayergame;
 
 import uno.cards.CollectionOfUnoCards;
 import uno.cards.UnoCard;
