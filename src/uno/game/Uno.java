@@ -103,12 +103,26 @@ public class Uno {
         deckManager.addToDiscardPile(card);
         outputRenderer.showMessage("Player " + (player + 1) + " played: " + card);
 
-        if (playerManager.getPlayerHand(player).getNumCards() == 1) {
-            outputRenderer.showMessage("Player " + (player + 1) + " declares UNO!");
-        }
-
+        int handSize = playerManager.getPlayerHand(player).getNumCards();
         playerManager.checkForWinner(player);
-        effectHandler.handleCardEffect(card, player, gameMode, this);
+
+        // Handle UNO declaration only if player hasn't won
+        if (!gameState.getFinishingOrder().contains(player)) {
+            if (handSize == 1) {
+                outputRenderer.showMessage("Player " + (player + 1) + " has one card!");
+                boolean declaredUno = humanController.promptUnoDeclaration(player);
+
+                if (declaredUno) {
+                    outputRenderer.showMessage("Player " + (player + 1) + " declares UNO!");
+                } else {
+                    outputRenderer.showMessage("Player " + (player + 1) + " failed to declare UNO! Drawing 2 penalty cards.");
+                    executeDraw(player, 2);
+                }
+            }
+
+            // Handle card effect after UNO check
+            effectHandler.handleCardEffect(card, player, gameMode, this);
+        }
     }
 
     // Getters for effect handler

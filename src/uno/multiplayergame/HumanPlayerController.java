@@ -62,4 +62,11 @@ public class HumanPlayerController {
         String response = scanner.nextLine();
         return "yes".equalsIgnoreCase(response.trim());
     }
+
+    public boolean promptUnoDeclaration(int playerIndex) {
+        System.out.println("Player " + (playerIndex + 1) + ", you have one card! Type 'UNO' to declare:");
+        Scanner scanner = new Scanner(System.in);
+        String response = scanner.nextLine();
+        return "UNO".equalsIgnoreCase(response.trim());
+    }
 }
