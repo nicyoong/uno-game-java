@@ -8,7 +8,12 @@ SOURCES := \
     $(SRC_DIR)/uno/game/ExtremeUno.java \
     $(SRC_DIR)/uno/game/ExtremeUnoCollection.java \
     $(SRC_DIR)/uno/ExtremeUnoLauncher.java \
-    $(SRC_DIR)/uno/game/SinglePlayerUno.java \
+    $(SRC_DIR)/uno/game/GameStateManager.java \
+    $(SRC_DIR)/uno/game/CardDeckManager.java \
+    $(SRC_DIR)/uno/game/PlayerManager.java \
+    $(SRC_DIR)/uno/game/HumanPlayerController.java \
+    $(SRC_DIR)/uno/game/OutputRenderer.java \
+    $(SRC_DIR)/uno/game/GameFlowController.java \
     $(SRC_DIR)/uno/game/Uno.java \
     $(SRC_DIR)/uno/cards/UnoCard.java \
     $(SRC_DIR)/uno/effects/CardEffectHandler.java \
@@ -33,14 +38,14 @@ $(BIN_DIR)/%.class: $(SRC_DIR)/%.java
 	@echo "Running command: javac -d $(BIN_DIR) $(SOURCES)"
 	@javac -d $(BIN_DIR) $(SOURCES)
 
-# Run the uno.game.Uno game
+# Run the Uno game
 run: $(CLASSES)
-	@echo "Running the uno.game.Uno game..."
+	@echo "Running the Uno game..."
 	@java -cp $(BIN_DIR) uno.UnoGameLauncher
 
-# Run the Extreme uno.game.Uno game
+# Run the Extreme Uno game
 run_extreme: $(CLASSES)
-	@echo "Running the Extreme uno.game.Uno game..."
+	@echo "Running the Extreme Uno game..."
 	@java -cp $(BIN_DIR) uno.ExtremeUnoLauncher
 
 # Clean target

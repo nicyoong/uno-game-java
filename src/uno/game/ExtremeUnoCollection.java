@@ -134,7 +134,7 @@ public class ExtremeUnoCollection {
     }    
 	
 	public String toString() {
-        return "Extreme uno.game.Uno Collection with " + getNumCards() + " uno.cards:\n" + super.toString();
+        return "Extreme Uno Collection with " + getNumCards() + " uno.cards:\n" + super.toString();
     }
 	
 	// Returns the number of uno.cards.

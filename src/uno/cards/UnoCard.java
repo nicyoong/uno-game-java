@@ -91,4 +91,14 @@ public class UnoCard {
 
         return 0;
     }
+
+    public static String getColorName(int colorNumber) {
+        switch (colorNumber) {
+            case 0: return "Yellow";
+            case 1: return "Red";
+            case 2: return "Green";
+            case 3: return "Blue";
+            default: return "Unknown";
+        }
+    }
 }
