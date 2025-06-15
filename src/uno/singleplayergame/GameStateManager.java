@@ -6,8 +6,8 @@ import java.util.List;
 public class GameStateManager {
     private int currentPlayerIndex;
     private boolean isClockwise;
-    private List<Integer> finishingOrder;
-    private int numPlayers;
+    private final List<Integer> finishingOrder;
+    private final int numPlayers;
     private int humanPlayerIndex;
 
     public GameStateManager(int numPlayers) {

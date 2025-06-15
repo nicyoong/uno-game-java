@@ -1,10 +1,10 @@
 package uno.ai;
 
-import uno.model.RecentAction;
-import uno.effects.SingleCardEffectHandler;
-import uno.game.SinglePlayerUno;
 import uno.cards.CollectionOfUnoCards;
 import uno.cards.UnoCard;
+import uno.effects.SingleCardEffectHandler;
+import uno.game.SinglePlayerUno;
+import uno.model.RecentAction;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -13,8 +13,8 @@ import java.util.Random;
 
 public class AIPlayer {
 
-    private SinglePlayerUno game;
-    private SingleCardEffectHandler singleCardEffectHandler;
+    private final SinglePlayerUno game;
+    private final SingleCardEffectHandler singleCardEffectHandler;
 
     public AIPlayer(SinglePlayerUno game) {
         this.game = game;

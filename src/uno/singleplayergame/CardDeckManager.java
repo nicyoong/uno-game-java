@@ -4,8 +4,8 @@ import uno.cards.CollectionOfUnoCards;
 import uno.cards.UnoCard;
 
 public class CardDeckManager {
-    private CollectionOfUnoCards deck;
-    private CollectionOfUnoCards discardPile;
+    private final CollectionOfUnoCards deck;
+    private final CollectionOfUnoCards discardPile;
 
     public CardDeckManager(String gameMode) {
         deck = new CollectionOfUnoCards();

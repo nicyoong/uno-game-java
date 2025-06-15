@@ -3,62 +3,62 @@ package uno.cards;
 import java.util.Random;
 
 public class CollectionOfUnoCards {
-	
-	final private static int MAXCARDS  = 112;
-	 
-	private UnoCard[] cards;
-	private int numCards;
-	
-	public CollectionOfUnoCards() {
-		cards = new UnoCard[MAXCARDS];
-		numCards = 0;
-	}
-	
-	public boolean addCard(UnoCard c) {
-		
-		if (numCards == MAXCARDS)
-			return false;
-		
-		cards[numCards] = c;
-		numCards++;
-		
-		return true;
-	}
-	
-	public UnoCard removeFromTop() {
-		
-		if (numCards == 0)
-			return null;
-			
-		UnoCard retval = cards[numCards-1];
-		numCards--;
-		
-		return retval;
-	}
-	
-	public UnoCard remove(int index) {
-		
-		// The invalid case here.
-		if (index < 0 || index >= numCards)
-			return null;
-			
-		// This is the card to remove.
-		UnoCard retval = cards[index];
-		
-		// It is easiest to copy the last card into this slot.
-		cards[index] = cards[numCards-1];
-		
-		// Our new deck size.
-		numCards--;
-		
-		// Return this card.
-		return retval;
-	}
-	
-	public void makeDeck(String gameMode) {
+
+    final private static int MAXCARDS = 112;
+
+    private final UnoCard[] cards;
+    private int numCards;
+
+    public CollectionOfUnoCards() {
+        cards = new UnoCard[MAXCARDS];
+        numCards = 0;
+    }
+
+    public boolean addCard(UnoCard c) {
+
+        if (numCards == MAXCARDS)
+            return false;
+
+        cards[numCards] = c;
+        numCards++;
+
+        return true;
+    }
+
+    public UnoCard removeFromTop() {
+
+        if (numCards == 0)
+            return null;
+
+        UnoCard retval = cards[numCards - 1];
+        numCards--;
+
+        return retval;
+    }
+
+    public UnoCard remove(int index) {
+
+        // The invalid case here.
+        if (index < 0 || index >= numCards)
+            return null;
+
+        // This is the card to remove.
+        UnoCard retval = cards[index];
+
+        // It is easiest to copy the last card into this slot.
+        cards[index] = cards[numCards - 1];
+
+        // Our new deck size.
+        numCards--;
+
+        // Return this card.
+        return retval;
+    }
+
+    public void makeDeck(String gameMode) {
         // This clears our deck!
         numCards = 0;
-    
+
         // Making 2 copies of each number card (1-9) and action uno.cards (Skip, Reverse, Draw Two)
         for (int i = 0; i < 2; i++) { // Loop for number uno.cards 1-9
             for (int j = 0; j < 4; j++) { // Loop for each color
@@ -74,7 +74,7 @@ public class CollectionOfUnoCards {
             cards[numCards] = new UnoCard(j, 0, gameMode); // 0 card
             numCards++;
         }
-    
+
         // Add 2 copies of action uno.cards for each color
         for (int i = 0; i < 2; i++) { // Loop for each action
             for (int j = 0; j < 4; j++) { // Loop for each color
@@ -86,7 +86,7 @@ public class CollectionOfUnoCards {
                 numCards++;
             }
         }
-    
+
         // Add 4 Wild and 4 Wild Draw Four uno.cards
         for (int i = 0; i < 4; i++) { // Loop for Wilds
             cards[numCards] = new UnoCard(-1, 13, gameMode); // Wild
@@ -100,54 +100,54 @@ public class CollectionOfUnoCards {
                 cards[numCards] = new UnoCard(-1, 15, gameMode); // Special card
                 numCards++;
             }
-        }   
-    
+        }
+
         // The deck is complete.
     }
-    
-	
-	public void shuffle() {
+
+
+    public void shuffle() {
         Random r = new Random();
-    
+
         for (int i = numCards - 1; i > 0; i--) {
             // Generate a random index from 0 to i
             int j = r.nextInt(i + 1);
-    
+
             // Swap uno.cards[i] with the element at random index
             UnoCard temp = cards[i];
             cards[i] = cards[j];
             cards[j] = temp;
         }
-    }    
-	
-	public String toString() {
-		
-		String answer = "";
-		
-		for (int i=0; i<numCards; i++)
-			answer = answer + i+". " + cards[i] + "\n";
-			
-		return answer;
-	}
-	
-	// Returns the number of uno.cards.
-	public int getNumCards() {
-		return numCards;
-	}
-	
-	// Returns the card at the top of this collection.
-	public UnoCard getTopCard() {
-		if (numCards == 0)
-			return null;
-		return cards[numCards-1];
-	}
-	
-	// Returns true if there's any card in this collection that can be played
-	// on top of c.
-	public boolean canPlay(UnoCard c) {
+    }
+
+    public String toString() {
+
+        String answer = "";
+
+        for (int i = 0; i < numCards; i++)
+            answer = answer + i + ". " + cards[i] + "\n";
+
+        return answer;
+    }
+
+    // Returns the number of uno.cards.
+    public int getNumCards() {
+        return numCards;
+    }
+
+    // Returns the card at the top of this collection.
+    public UnoCard getTopCard() {
+        if (numCards == 0)
+            return null;
+        return cards[numCards - 1];
+    }
+
+    // Returns true if there's any card in this collection that can be played
+    // on top of c.
+    public boolean canPlay(UnoCard c) {
         boolean hasPlayableCard = false; // To track if there are any playable uno.cards
         boolean hasWildDrawFour = false; // To track if there is a Wild Draw Four
-    
+
         for (int i = 0; i < numCards; i++) {
             if (cards[i].canPlay(c)) {
                 // If there is a playable card other than Wild Draw Four, set flag and break
@@ -161,15 +161,12 @@ public class CollectionOfUnoCards {
                 hasWildDrawFour = true;
             }
         }
-    
+
         // Determine return value based on the flags
+        // No playable uno.cards at all
         if (hasPlayableCard) {
             return true; // There are playable uno.cards other than Wild Draw Four
-        } else if (hasWildDrawFour) {
-            return true; // There are no other playable uno.cards but Wild Draw Four is available
-        } else {
-            return false; // No playable uno.cards at all
-        }
+        } else return hasWildDrawFour; // There are no other playable uno.cards but Wild Draw Four is available
     }
 
     public boolean canPlayExcludingWildDrawFour(UnoCard topCard) {
@@ -185,11 +182,11 @@ public class CollectionOfUnoCards {
         }
         return false;
     }
-	
-	// Returns the in position index.
-	public UnoCard getCard(int index) {
-		if (index >= numCards || index < 0)
-			return null;
-		return cards[index];
-	}
+
+    // Returns the in position index.
+    public UnoCard getCard(int index) {
+        if (index >= numCards || index < 0)
+            return null;
+        return cards[index];
+    }
 }

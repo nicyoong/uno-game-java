@@ -3,7 +3,6 @@ package uno.game;
 import uno.cards.CollectionOfUnoCards;
 import uno.cards.UnoCard;
 import uno.effects.CardEffectHandler;
-import uno.multiplayergame.HumanPlayerController;
 import uno.multiplayergame.*;
 
 public class Uno {
@@ -11,12 +10,12 @@ public class Uno {
     private static final int MIN_PLAYERS = 2;
     private static final int MAX_PLAYERS = 10;
 
-    private GameStateManager gameState;
-    private CardDeckManager deckManager;
-    private PlayerManager playerManager;
-    private HumanPlayerController humanController;
-    private OutputRenderer outputRenderer;
-    private CardEffectHandler effectHandler;
+    private final GameStateManager gameState;
+    private final CardDeckManager deckManager;
+    private final PlayerManager playerManager;
+    private final HumanPlayerController humanController;
+    private final OutputRenderer outputRenderer;
+    private final CardEffectHandler effectHandler;
 
     public Uno(int numPlayers, String gameMode) {
         validatePlayerCount(numPlayers);
@@ -138,10 +137,21 @@ public class Uno {
     }
 
     // Getters for effect handler
-    public GameStateManager getGameState() { return gameState; }
-    public PlayerManager getPlayerManager() { return playerManager; }
-    public CardDeckManager getDeckManager() { return deckManager; }
-    public HumanPlayerController getHumanController() { return humanController; }
+    public GameStateManager getGameState() {
+        return gameState;
+    }
+
+    public PlayerManager getPlayerManager() {
+        return playerManager;
+    }
+
+    public CardDeckManager getDeckManager() {
+        return deckManager;
+    }
+
+    public HumanPlayerController getHumanController() {
+        return humanController;
+    }
 
     public void executeDraw(int playerIndex, int numCards) {
         playerManager.executeDraw(playerIndex, numCards, deckManager);

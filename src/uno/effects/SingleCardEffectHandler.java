@@ -3,15 +3,18 @@ package uno.effects;
 import uno.cards.CollectionOfUnoCards;
 import uno.cards.UnoCard;
 import uno.game.SinglePlayerUno;
-import uno.singleplayergame.*;
+import uno.singleplayergame.CardDeckManager;
+import uno.singleplayergame.GameStateManager;
+import uno.singleplayergame.HumanPlayerController;
+import uno.singleplayergame.OutputRenderer;
 
 import java.util.Random;
 
 public class SingleCardEffectHandler {
-    
+
     public void handleCardEffect(UnoCard playedCard, int playerIndex, String gameMode, SinglePlayerUno game) {
         int cardNumber = playedCard.getNumber();
-    
+
         if (cardNumber == 10) {
             handleSkipCard(playerIndex, game);
         } else if (cardNumber == 11) {
@@ -255,7 +258,7 @@ public class SingleCardEffectHandler {
                 break; // No action needed for regular cards
         }
     }
-    
+
 
     // Additional methods can be added here for different game modes if needed
 }

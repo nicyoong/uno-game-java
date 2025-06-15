@@ -2,8 +2,8 @@ package uno.game;
 
 import uno.ai.AIPlayer;
 import uno.cards.CollectionOfUnoCards;
-import uno.effects.SingleCardEffectHandler;
 import uno.cards.UnoCard;
+import uno.effects.SingleCardEffectHandler;
 import uno.model.RecentAction;
 import uno.singleplayergame.*;
 
@@ -16,15 +16,15 @@ public class SinglePlayerUno {
     private static final int MIN_PLAYERS = 2;
     private static final int MAX_PLAYERS = 10;
 
-    private GameStateManager gameState;
-    private CardDeckManager deckManager;
-    private PlayerManager playerManager;
-    private HumanPlayerController humanController;
-    private OutputRenderer outputRenderer;
-    private SingleCardEffectHandler effectHandler;
+    private final GameStateManager gameState;
+    private final CardDeckManager deckManager;
+    private final PlayerManager playerManager;
+    private final HumanPlayerController humanController;
+    private final OutputRenderer outputRenderer;
+    private final SingleCardEffectHandler effectHandler;
 
-    private String gameMode;
-    private int difficulty;
+    private final String gameMode;
+    private final int difficulty;
     private String humanPlayerName;
 
     public SinglePlayerUno(int numPlayers, String gameMode, int difficulty) {
@@ -225,9 +225,23 @@ public class SinglePlayerUno {
     }
 
     // Getters for dependencies
-    public GameStateManager getGameState() { return gameState; }
-    public PlayerManager getPlayerManager() { return playerManager; }
-    public CardDeckManager getDeckManager() { return deckManager; }
-    public OutputRenderer getOutputRenderer() { return outputRenderer; }
-    public int chooseRandomColor() { return new Random().nextInt(4); }
+    public GameStateManager getGameState() {
+        return gameState;
+    }
+
+    public PlayerManager getPlayerManager() {
+        return playerManager;
+    }
+
+    public CardDeckManager getDeckManager() {
+        return deckManager;
+    }
+
+    public OutputRenderer getOutputRenderer() {
+        return outputRenderer;
+    }
+
+    public int chooseRandomColor() {
+        return new Random().nextInt(4);
+    }
 }

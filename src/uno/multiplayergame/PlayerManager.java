@@ -2,12 +2,13 @@ package uno.multiplayergame;
 
 import uno.cards.CollectionOfUnoCards;
 import uno.cards.UnoCard;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class PlayerManager {
-    private List<CollectionOfUnoCards> hands;
-    private GameStateManager gameState;
+    private final List<CollectionOfUnoCards> hands;
+    private final GameStateManager gameState;
 
     public PlayerManager(int numPlayers, GameStateManager gameState) {
         this.gameState = gameState;

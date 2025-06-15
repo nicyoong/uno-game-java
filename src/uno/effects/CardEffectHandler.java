@@ -1,10 +1,10 @@
 package uno.effects;
 
 import uno.cards.CollectionOfUnoCards;
-import uno.game.Uno;
 import uno.cards.UnoCard;
-import uno.multiplayergame.OutputRenderer;
+import uno.game.Uno;
 import uno.multiplayergame.GameStateManager;
+import uno.multiplayergame.OutputRenderer;
 
 public class CardEffectHandler {
     private final OutputRenderer outputRenderer = new OutputRenderer();

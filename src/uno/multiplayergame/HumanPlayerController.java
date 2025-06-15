@@ -2,10 +2,11 @@ package uno.multiplayergame;
 
 import uno.cards.CollectionOfUnoCards;
 import uno.cards.UnoCard;
+
 import java.util.Scanner;
 
 public class HumanPlayerController {
-    private Scanner scanner;
+    private final Scanner scanner;
 
     public HumanPlayerController() {
         scanner = new Scanner(System.in);

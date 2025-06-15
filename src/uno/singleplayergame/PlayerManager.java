@@ -2,12 +2,13 @@ package uno.singleplayergame;
 
 import uno.cards.CollectionOfUnoCards;
 import uno.cards.UnoCard;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class PlayerManager {
-    private List<CollectionOfUnoCards> hands;
-    private int numPlayers;
+    private final List<CollectionOfUnoCards> hands;
+    private final int numPlayers;
 
     public PlayerManager(int numPlayers) {
         this.numPlayers = numPlayers;

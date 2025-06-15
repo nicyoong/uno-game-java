@@ -6,8 +6,8 @@ import java.util.List;
 public class GameStateManager {
     private int currentPlayerIndex;
     private boolean isClockwise;
-    private List<Integer> finishingOrder;
-    private int numPlayers;
+    private final List<Integer> finishingOrder;
+    private final int numPlayers;
 
     public GameStateManager(int numPlayers) {
         this.numPlayers = numPlayers;
@@ -16,12 +16,29 @@ public class GameStateManager {
     }
 
     // Getters and setters
-    public int getCurrentPlayerIndex() { return currentPlayerIndex; }
-    public void setCurrentPlayerIndex(int currentPlayerIndex) { this.currentPlayerIndex = currentPlayerIndex; }
-    public boolean isClockwise() { return isClockwise; }
-    public void setClockwise(boolean clockwise) { isClockwise = clockwise; }
-    public List<Integer> getFinishingOrder() { return finishingOrder; }
-    public int getNumPlayers() { return numPlayers; }
+    public int getCurrentPlayerIndex() {
+        return currentPlayerIndex;
+    }
+
+    public void setCurrentPlayerIndex(int currentPlayerIndex) {
+        this.currentPlayerIndex = currentPlayerIndex;
+    }
+
+    public boolean isClockwise() {
+        return isClockwise;
+    }
+
+    public void setClockwise(boolean clockwise) {
+        isClockwise = clockwise;
+    }
+
+    public List<Integer> getFinishingOrder() {
+        return finishingOrder;
+    }
+
+    public int getNumPlayers() {
+        return numPlayers;
+    }
 
     public int getNextPlayer(int currentPlayer) {
         if (isClockwise) {

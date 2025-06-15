@@ -1,6 +1,7 @@
 package uno;
 
 import uno.singleplayergame.ExtremeUno;
+
 import java.util.Scanner;
 import java.util.logging.*;
 
